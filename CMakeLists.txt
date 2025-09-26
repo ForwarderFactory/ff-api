@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.27)
 
 project(ff-web VERSION 0.1.0)
 
-set_property(GLOBAL PROPERTY CXX_STANDARD 20)
+set_property(GLOBAL PROPERTY CXX_STANDARD 23)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -43,6 +43,7 @@ find_package(nlohmann_json REQUIRED)
 find_package(ImageMagick REQUIRED COMPONENTS Magick++)
 find_package(PkgConfig REQUIRED)
 find_package(FFmpeg COMPONENTS AVCODEC AVFORMAT AVUTIL AVDEVICE REQUIRED)
+find_package(ssock REQUIRED)
 
 add_compile_definitions(LIMHAMN_DATABASE_ICONV)
 
@@ -82,6 +83,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json
     ImageMagick::Magick++
     ${FFMPEG_LIBRARIES}
+    ssock::ssock
 )
 
 # some systems require explicit linking to iconv, others don't

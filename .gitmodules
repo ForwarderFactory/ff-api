@@ -3,7 +3,7 @@
 	url = https://github.com/jacnils/limhamn
 [submodule "libs/libbcrypt"]
 	path = libs/libbcrypt
-	url = https://github.com/trusch/libbcrypt
+	url = https://github.com/jacnils/libbcrypt
 [submodule "libs/maddy"]
 	path = libs/maddy
 	url = https://github.com/progsource/maddy

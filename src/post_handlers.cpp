@@ -4,8 +4,8 @@
 #include <nlohmann/json.hpp>
 #include <endpoint_handlers.hpp>
 
-limhamn::http::server::response ff::handle_try_upload_post_endpoint(const limhamn::http::server::request& req, database& db) {
-	limhamn::http::server::response response;
+ssock::http::server::response ff::handle_try_upload_post_endpoint(const ssock::http::server::request& req, database& db) {
+	ssock::http::server::response response;
 	response.content_type = "application/json";
 
     std::string _json{};
@@ -279,8 +279,8 @@ limhamn::http::server::response ff::handle_try_upload_post_endpoint(const limham
 	return response;
 }
 
-limhamn::http::server::response ff::handle_try_upload_post_comment_endpoint(const limhamn::http::server::request& req, database& db) {
-	limhamn::http::server::response response;
+ssock::http::server::response ff::handle_try_upload_post_comment_endpoint(const ssock::http::server::request& req, database& db) {
+	ssock::http::server::response response;
 	response.content_type = "application/json";
 
     std::string _json{};

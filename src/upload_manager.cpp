@@ -5,7 +5,7 @@
 #include <limhamn/http/http_utils.hpp>
 #include <wad_info.hpp>
 
-std::pair<ff::UploadStatus, std::string> ff::try_upload_forwarder(const limhamn::http::server::request& req, database& db) {
+std::pair<ff::UploadStatus, std::string> ff::try_upload_forwarder(const ssock::http::server::request& req, database& db) {
     std::string json{};
 
     std::vector<std::string> screenshots{};
@@ -449,7 +449,7 @@ std::pair<ff::UploadStatus, std::string> ff::try_upload_forwarder(const limhamn:
     return {ff::UploadStatus::Success, page_identifier};
 }
 
-std::pair<ff::UploadStatus, std::string> ff::try_upload_file(const limhamn::http::server::request& req, database& db) {
+std::pair<ff::UploadStatus, std::string> ff::try_upload_file(const ssock::http::server::request& req, database& db) {
     std::string json{};
 
     struct FilePtr {

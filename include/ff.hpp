@@ -14,9 +14,8 @@
 #include <database.hpp>
 #define LIMHAMN_LOGGER_IMPL
 #include <limhamn/logger/logger.hpp>
-#define LIMHAMN_HTTP_SERVER_IMPL
 #define LIMHAMN_HTTP_UTILS_IMPL
-#include <limhamn/http/http_server.hpp>
+#include <ssock.hpp>
 
 namespace ff {
     inline limhamn::logger::logger logger{};
@@ -35,12 +34,12 @@ namespace ff {
         const std::string& key, const std::string& email, int64_t created_at, int64_t updated_at, const std::string& ip_address,
         const std::string& user_agent, UserType user_type, const std::string& json);
     std::pair<LoginStatus, std::string> try_login(database& database, const std::string& username, const std::string& password,
-        const std::string& ip_address, const std::string& user_agent, limhamn::http::server::response& response);
+        const std::string& ip_address, const std::string& user_agent, ssock::http::server::response& response);
     AccountCreationStatus make_account(database& database, const std::string& username, const std::string& password, const std::string& email,
         const std::string& ip_address, const std::string& user_agent, UserType user_type);
-    std::pair<UploadStatus, std::string> try_upload_forwarder(const limhamn::http::server::request& req, database& db);
-    std::pair<UploadStatus, std::string> try_upload_file(const limhamn::http::server::request& req, database& db);
-    ProfileUpdateStatus update_profile(const limhamn::http::server::request& req, database& db);
+    std::pair<UploadStatus, std::string> try_upload_forwarder(const ssock::http::server::request& req, database& db);
+    std::pair<UploadStatus, std::string> try_upload_file(const ssock::http::server::request& req, database& db);
+    ProfileUpdateStatus update_profile(const ssock::http::server::request& req, database& db);
 
     std::string get_email_from_username(database& database, const std::string& username);
     std::string get_username_from_email(database& database, const std::string& email);
@@ -51,7 +50,7 @@ namespace ff {
     std::string generate_default_config();
     void setup_database(database& database);
     std::string open_file(const std::string& file_path);
-    bool username_is_stored(const limhamn::http::server::request& request);
+    bool username_is_stored(const ssock::http::server::request& request);
     bool ensure_valid_creds(database& database, const std::string& username, const std::string& password);
     bool verify_key(database& database, const std::string& username, const std::string& key);
     bool user_is_verified(database& database, const std::string& username);

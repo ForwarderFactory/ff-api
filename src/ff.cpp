@@ -240,7 +240,7 @@ void ff::start_server() {
             ff::needs_setup = true;
         }
 
-        limhamn::http::server::server(limhamn::http::server::server_settings{
+        ssock::http::server::sync_server server(ssock::http::server::server_settings{
             .port = settings.port,
             .enable_session = true,
             .session_directory = settings.session_directory,
@@ -250,18 +250,15 @@ void ff::start_server() {
                 "user_type",
             },
             .max_request_size = settings.max_request_size,
-            .rate_limits = {},
             .blacklisted_ips = settings.blacklisted_ips,
-            .whitelisted_ips = settings.whitelisted_ips,
-            .default_rate_limit = settings.rate_limit,
             .trust_x_forwarded_for = settings.trust_x_forwarded_for,
 #ifndef FF_DEBUG
         	.session_is_secure = true,
 #endif
-            }, [&](const limhamn::http::server::request& request) -> limhamn::http::server::response {
+            }, [&](const ssock::http::server::request& request) -> ssock::http::server::response {
             ff::logger.write_to_log(limhamn::logger::type::access, "Request received from " + request.ip_address + " to " + request.endpoint + " received, handling it.\n");
 
-            const std::unordered_map<std::string, std::function<limhamn::http::server::response(const limhamn::http::server::request&, ff::database&)>> handlers{
+            const std::unordered_map<std::string, std::function<ssock::http::server::response(const ssock::http::server::request&, ff::database&)>> handlers{
                 {virtual_favicon_path, ff::handle_virtual_favicon_endpoint},
                 {virtual_stylesheet_path, ff::handle_virtual_stylesheet_endpoint},
                 {virtual_script_path, ff::handle_virtual_script_endpoint},
@@ -317,7 +314,7 @@ void ff::start_server() {
                 {"/api/close_topic", ff::handle_api_close_topic_endpoint},
                 //{"/api/pin_post_to_topic", ff::handle_api_pin_post_to_topic},
             };
-            const std::unordered_map<std::string, std::function<limhamn::http::server::response(const limhamn::http::server::request&, ff::database&)>> setup_handlers{
+            const std::unordered_map<std::string, std::function<ssock::http::server::response(const ssock::http::server::request&, ff::database&)>> setup_handlers{
                 {virtual_favicon_path, ff::handle_virtual_favicon_endpoint},
                 {virtual_stylesheet_path, ff::handle_virtual_stylesheet_endpoint},
                 {virtual_script_path, ff::handle_virtual_script_endpoint},
@@ -328,7 +325,7 @@ void ff::start_server() {
             // handle custom paths
             for (const auto& it : ff::settings.custom_paths) {
                 if (it.first == request.endpoint) {
-                    limhamn::http::server::response response{};
+                    ssock::http::server::response response{};
 
                     if (!ff::static_exists.is_file(it.second)) {
                         response.content_type = "text/html";
@@ -378,7 +375,7 @@ void ff::start_server() {
                     logger.write_to_log(limhamn::logger::type::notice, "File download request for: " + h.path + "\n");
 #endif
 
-                    limhamn::http::server::response response{};
+                    ssock::http::server::response response{};
 
                     response.body = open_file(h.path);
                     response.http_status = 200;
@@ -429,12 +426,12 @@ void ff::start_server() {
                         database->exec("DELETE FROM activation_urls WHERE url = ?;", file);
 
                         // redirect to /
-                        limhamn::http::server::response response{};
+                        ssock::http::server::response response{};
                         response.http_status = 302;
                         response.headers.push_back({"Location", "/"});
                         return response;
                     } catch (const std::exception&) {
-                        limhamn::http::server::response resp;
+                        ssock::http::server::response resp;
                         resp.content_type = "text/html";
                         resp.http_status = 500;
                         resp.body = "<p>500 Internal Server Error</p>";
@@ -443,7 +440,7 @@ void ff::start_server() {
                 }
             }
 
-            limhamn::http::server::response response{};
+            ssock::http::server::response response{};
 
             response.content_type = "text/html";
             response.http_status = 404;
@@ -451,6 +448,8 @@ void ff::start_server() {
 
             return response;
         });
+
+    	server.run();
     } catch (const std::exception& e) {
         ff::logger.write_to_log(limhamn::logger::type::error, "An error occurred: " + std::string{e.what()} + "\n");
 

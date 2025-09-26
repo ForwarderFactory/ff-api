@@ -7,8 +7,8 @@
 #include <static_exists.hpp>
 #include <endpoint_handlers.hpp>
 
-limhamn::http::server::response ff::handle_root_endpoint(const limhamn::http::server::request&, database&) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_root_endpoint(const ssock::http::server::request&, database&) {
+    ssock::http::server::response response{};
 
     const auto prepare_file = [](const std::string& path) -> std::string {
         static const std::string temp_file = settings.temp_directory + "/index.html";
@@ -65,8 +65,8 @@ limhamn::http::server::response ff::handle_root_endpoint(const limhamn::http::se
     return response;
 }
 
-limhamn::http::server::response ff::handle_try_upload_forwarder_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_try_upload_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
 
     if (request.body.empty()) {
 #ifdef FF_DEBUG
@@ -112,8 +112,8 @@ limhamn::http::server::response ff::handle_try_upload_forwarder_endpoint(const l
     return response;
 }
 
-limhamn::http::server::response ff::handle_try_upload_file_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_try_upload_file_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
 
     if (request.body.empty()) {
 #ifdef FF_DEBUG
@@ -159,12 +159,12 @@ limhamn::http::server::response ff::handle_try_upload_file_endpoint(const limham
     return response;
 }
 
-limhamn::http::server::response ff::handle_setup_endpoint(const limhamn::http::server::request& request, database& db) {
+ssock::http::server::response ff::handle_setup_endpoint(const ssock::http::server::request& request, database& db) {
     return handle_root_endpoint(request, db);
 }
 
-limhamn::http::server::response ff::handle_try_setup_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_try_setup_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     if (!ff::needs_setup) {
@@ -275,8 +275,8 @@ limhamn::http::server::response ff::handle_try_setup_endpoint(const limhamn::htt
     }
 }
 
-limhamn::http::server::response ff::handle_virtual_favicon_endpoint(const limhamn::http::server::request&, database&) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_virtual_favicon_endpoint(const ssock::http::server::request&, database&) {
+    ssock::http::server::response response{};
 
     response.content_type = "image/svg+xml";
     response.http_status = 200;
@@ -292,8 +292,8 @@ limhamn::http::server::response ff::handle_virtual_favicon_endpoint(const limham
     return response;
 }
 
-limhamn::http::server::response ff::handle_virtual_stylesheet_endpoint(const limhamn::http::server::request&, database&) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_virtual_stylesheet_endpoint(const ssock::http::server::request&, database&) {
+    ssock::http::server::response response{};
 
     response.content_type = "text/css";
     response.http_status = 200;
@@ -309,8 +309,8 @@ limhamn::http::server::response ff::handle_virtual_stylesheet_endpoint(const lim
     return response;
 }
 
-limhamn::http::server::response ff::handle_virtual_script_endpoint(const limhamn::http::server::request&, database&) {
-    limhamn::http::server::response response;
+ssock::http::server::response ff::handle_virtual_script_endpoint(const ssock::http::server::request&, database&) {
+    ssock::http::server::response response;
 
     response.content_type = "text/javascript";
     response.http_status = 200;
@@ -351,8 +351,8 @@ limhamn::http::server::response ff::handle_virtual_script_endpoint(const limhamn
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_try_register_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_try_register_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
 #if FF_DEBUG
@@ -479,8 +479,8 @@ limhamn::http::server::response ff::handle_api_try_register_endpoint(const limha
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_try_login_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_try_login_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     if (request.method != "POST") {
@@ -588,8 +588,8 @@ limhamn::http::server::response ff::handle_api_try_login_endpoint(const limhamn:
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_get_forwarders_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_get_forwarders_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
 
     response.content_type = "application/json";
     response.http_status = 200;
@@ -904,8 +904,8 @@ limhamn::http::server::response ff::handle_api_get_forwarders_endpoint(const lim
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_get_files_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_get_files_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
 
     response.content_type = "application/json";
     response.http_status = 200;
@@ -1198,8 +1198,8 @@ limhamn::http::server::response ff::handle_api_get_files_endpoint(const limhamn:
 
 // this endpoint requires auth and cookies
 // in the future, we should allow other kinds of auth for this endpoint, so that third party clients can use it
-limhamn::http::server::response ff::handle_api_set_approval_for_uploads_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_set_approval_for_uploads_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -1421,8 +1421,8 @@ limhamn::http::server::response ff::handle_api_set_approval_for_uploads_endpoint
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_update_profile_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_update_profile_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
 
     if (request.body.empty()) {
 #ifdef FF_DEBUG
@@ -1466,8 +1466,8 @@ limhamn::http::server::response ff::handle_api_update_profile_endpoint(const lim
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_get_profile_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_get_profile_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
 
     if (request.method != "POST") {
         nlohmann::json json;
@@ -1573,8 +1573,8 @@ limhamn::http::server::response ff::handle_api_get_profile_endpoint(const limham
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_create_announcement_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_create_announcement_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -1749,8 +1749,8 @@ limhamn::http::server::response ff::handle_api_create_announcement_endpoint(cons
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_get_announcements_endpoint(const limhamn::http::server::request&, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_get_announcements_endpoint(const ssock::http::server::request&, database& db) {
+    ssock::http::server::response response{};
 
     const auto query = db.query("SELECT * FROM general WHERE id=1;");
     if (query.empty()) {
@@ -1807,8 +1807,8 @@ limhamn::http::server::response ff::handle_api_get_announcements_endpoint(const 
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_delete_announcement(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_delete_announcement(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -1982,8 +1982,8 @@ limhamn::http::server::response ff::handle_api_delete_announcement(const limhamn
     }
 }
 
-limhamn::http::server::response ff::handle_api_edit_announcement_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_edit_announcement_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2174,8 +2174,8 @@ limhamn::http::server::response ff::handle_api_edit_announcement_endpoint(const 
 }
 
 
-limhamn::http::server::response ff::handle_api_rate_file_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_rate_file_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2322,8 +2322,8 @@ limhamn::http::server::response ff::handle_api_rate_file_endpoint(const limhamn:
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_rate_forwarder_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_rate_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2470,8 +2470,8 @@ limhamn::http::server::response ff::handle_api_rate_forwarder_endpoint(const lim
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_comment_forwarder_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_comment_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2623,8 +2623,8 @@ limhamn::http::server::response ff::handle_api_comment_forwarder_endpoint(const 
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_comment_file_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_comment_file_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2775,8 +2775,8 @@ limhamn::http::server::response ff::handle_api_comment_file_endpoint(const limha
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_delete_comment_forwarder_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_delete_comment_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2932,8 +2932,8 @@ limhamn::http::server::response ff::handle_api_delete_comment_forwarder_endpoint
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_delete_comment_file_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_delete_comment_file_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3089,8 +3089,8 @@ limhamn::http::server::response ff::handle_api_delete_comment_file_endpoint(cons
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_delete_file_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_delete_file_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3204,8 +3204,8 @@ limhamn::http::server::response ff::handle_api_delete_file_endpoint(const limham
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_delete_forwarder_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_delete_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3319,8 +3319,8 @@ limhamn::http::server::response ff::handle_api_delete_forwarder_endpoint(const l
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_stay_logged_in(const limhamn::http::server::request& request, database&) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_stay_logged_in(const ssock::http::server::request& request, database&) {
+    ssock::http::server::response response{};
 
     if (request.session_id.empty()) {
         nlohmann::json json;
@@ -3336,7 +3336,7 @@ limhamn::http::server::response ff::handle_api_stay_logged_in(const limhamn::htt
 
     ff::logger.write_to_log(limhamn::logger::type::notice, "Setting session cookie with name: " + settings.session_cookie_name + ", value: " + request.session_id + ", expires: " + std::to_string(expires) + "\n");
 
-    response.cookies.push_back(limhamn::http::server::cookie{
+    response.cookies.push_back(ssock::http::server::cookie{
         .name = settings.session_cookie_name,
         .value = request.session_id,
         .expires = expires,
@@ -3349,7 +3349,7 @@ limhamn::http::server::response ff::handle_api_stay_logged_in(const limhamn::htt
     });
     for (const auto& it : request.cookies) {
         if (it.name == "username" || it.name == "user_type") {
-            response.cookies.push_back(limhamn::http::server::cookie{
+            response.cookies.push_back(ssock::http::server::cookie{
                 .name = it.name,
                 .value = it.value,
                 .expires = expires,
@@ -3370,8 +3370,8 @@ limhamn::http::server::response ff::handle_api_stay_logged_in(const limhamn::htt
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_try_logout_endpoint(const limhamn::http::server::request&, database&) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_try_logout_endpoint(const ssock::http::server::request&, database&) {
+    ssock::http::server::response response{};
 
     response.content_type = "application/json";
     response.http_status = 204;
@@ -3383,8 +3383,8 @@ limhamn::http::server::response ff::handle_api_try_logout_endpoint(const limhamn
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_create_topic_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_create_topic_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3569,8 +3569,8 @@ limhamn::http::server::response ff::handle_api_create_topic_endpoint(const limha
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_delete_topic_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_delete_topic_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3721,8 +3721,8 @@ limhamn::http::server::response ff::handle_api_delete_topic_endpoint(const limha
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_get_topics_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_get_topics_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
 	int start_index{};
@@ -3793,8 +3793,8 @@ limhamn::http::server::response ff::handle_api_get_topics_endpoint(const limhamn
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_close_topic_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_close_topic_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3934,8 +3934,8 @@ limhamn::http::server::response ff::handle_api_close_topic_endpoint(const limham
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_edit_topic_endpoint(const limhamn::http::server::request& request, database& db) {
-	limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_edit_topic_endpoint(const ssock::http::server::request& request, database& db) {
+	ssock::http::server::response response{};
 	response.content_type = "application/json";
 
 	const auto get_username = [&request]() -> std::string {
@@ -4075,12 +4075,12 @@ limhamn::http::server::response ff::handle_api_edit_topic_endpoint(const limhamn
 	return response;
 }
 
-limhamn::http::server::response ff::handle_api_create_post_endpoint(const limhamn::http::server::request& request, database& db) {
+ssock::http::server::response ff::handle_api_create_post_endpoint(const ssock::http::server::request& request, database& db) {
 	return ff::handle_try_upload_post_endpoint(request, db);
 }
 
-limhamn::http::server::response ff::handle_api_delete_post_endpoint(const limhamn::http::server::request& request, database& db) {
-    limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_delete_post_endpoint(const ssock::http::server::request& request, database& db) {
+    ssock::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -4257,8 +4257,8 @@ limhamn::http::server::response ff::handle_api_delete_post_endpoint(const limham
     }
 }
 
-limhamn::http::server::response ff::handle_api_close_post_endpoint(const limhamn::http::server::request& request, database& db) {
-	limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_close_post_endpoint(const ssock::http::server::request& request, database& db) {
+	ssock::http::server::response response{};
 	response.content_type = "application/json";
 
 	const auto get_username = [&request]() -> std::string {
@@ -4419,8 +4419,8 @@ limhamn::http::server::response ff::handle_api_close_post_endpoint(const limhamn
 	return response;
 }
 
-limhamn::http::server::response ff::handle_api_get_posts_endpoint(const limhamn::http::server::request& request, database& db) {
-	limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_get_posts_endpoint(const ssock::http::server::request& request, database& db) {
+	ssock::http::server::response response{};
     response.content_type = "application/json";
 
 	std::vector<std::string> ids{};
@@ -4490,8 +4490,8 @@ limhamn::http::server::response ff::handle_api_get_posts_endpoint(const limhamn:
     return response;
 }
 
-limhamn::http::server::response ff::handle_api_edit_post_endpoint(const limhamn::http::server::request& request, database& db) {
-	limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_edit_post_endpoint(const ssock::http::server::request& request, database& db) {
+	ssock::http::server::response response{};
 	response.content_type = "application/json";
 
 	const auto get_username = [&request]() -> std::string {
@@ -4655,12 +4655,12 @@ limhamn::http::server::response ff::handle_api_edit_post_endpoint(const limhamn:
     }
 }
 
-limhamn::http::server::response ff::handle_api_comment_post_endpoint(const limhamn::http::server::request& request, database& db) {
+ssock::http::server::response ff::handle_api_comment_post_endpoint(const ssock::http::server::request& request, database& db) {
 	return ff::handle_try_upload_post_comment_endpoint(request, db);
 }
 
-limhamn::http::server::response ff::handle_api_delete_comment_post_endpoint(const limhamn::http::server::request& request, database& db) {
-	limhamn::http::server::response response{};
+ssock::http::server::response ff::handle_api_delete_comment_post_endpoint(const ssock::http::server::request& request, database& db) {
+	ssock::http::server::response response{};
 	response.content_type = "application/json";
 
 	const auto get_username = [&request]() -> std::string {

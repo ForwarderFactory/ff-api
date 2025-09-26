@@ -5,7 +5,7 @@
 #include <nlohmann/json.hpp>
 #include <limhamn/http/http_utils.hpp>
 
-bool ff::username_is_stored(const limhamn::http::server::request& request) {
+bool ff::username_is_stored(const ssock::http::server::request& request) {
     return request.session.find("username") != request.session.end();
 }
 
@@ -169,7 +169,7 @@ void ff::insert_into_user_table(database& database, const std::string& username,
 }
 
 std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const std::string& username, const std::string& password,
-        const std::string& ip_address, const std::string& user_agent, limhamn::http::server::response& response) {
+        const std::string& ip_address, const std::string& user_agent, ssock::http::server::response& response) {
     const std::string base_username{username};
     const std::string base_password{password};
     const std::string base_ip_address{ip_address};
@@ -203,6 +203,7 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
         response.session["username"] = base_username;
         response.session["key"] = key;
 
+    	/*
         response.cookies.push_back({"username", base_username, .path = "/",
         	.same_site = "Strict",
         	.http_only = true,
@@ -210,8 +211,18 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
                 .secure = true,
 #endif
         });
+        */
 
-        limhamn::http::server::cookie c;
+        ssock::http::server::cookie c;
+    	c.name = "username";
+    	c.value = base_username;
+    	c.path = "/";
+    	c.same_site = "Strict";
+    	c.http_only = true;
+#ifndef FF_DEBUG
+    	c.secure = true;
+#endif
+    	response.cookies.push_back(c);
 
         UserType type = ff::get_user_type(database, base_username);
         int user_type{0};
@@ -220,14 +231,16 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
             user_type = 1;
         }
 
-        response.cookies.push_back({"user_type", std::to_string(user_type),
-        	.path = "/",
-        	.same_site = "Strict",
-        	.http_only = true,
+    	ssock::http::server::cookie cookie;
+    	cookie.name = "user_type";
+    	cookie.value = std::to_string(user_type);
+    	cookie.path = "/";
+    	cookie.same_site = "Strict";
+    	cookie.http_only = true;
 #ifndef FF_DEBUG
-        	.secure = true,
+    	cookie.secure = true;
 #endif
-        });
+    	response.cookies.push_back(cookie);
 
         return {ff::LoginStatus::Success, key};
     }
@@ -239,20 +252,15 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
 // If such case is not taken, it may be possible to create an account with elevated privileges.
 ff::AccountCreationStatus ff::make_account(database& database, const std::string& username, const std::string& password,
         const std::string& email, const std::string& ip_address, const std::string& user_agent, UserType user_type) {
-    const std::string base_username{username};
-    const std::string base_password{password};
-    const std::string base_ip_address{ip_address};
-    const std::string base_user_agent{user_agent};
-    std::string base_email{email};
     const std::string hashed_password{scrypto::password_hash(password)};
-    const std::string key{scrypto::generate_key({base_password})};
+    const std::string key{scrypto::generate_key({password})};
     const int64_t current_time{scrypto::return_unix_millis()};
     constexpr int uploads{0};
 
     try {
-        if (!user_is_verified(database, base_username) && settings.enable_email_verification) {
-            database.exec("DELETE FROM users WHERE username = ?;", base_username);
-            database.exec("DELETE FROM activation_urls WHERE username = ?;", base_username);
+        if (!user_is_verified(database, username) && settings.enable_email_verification) {
+            database.exec("DELETE FROM users WHERE username = ?;", username);
+            database.exec("DELETE FROM activation_urls WHERE username = ?;", username);
         }
     } catch (const std::exception&) {
         return ff::AccountCreationStatus::Failure;
@@ -262,54 +270,54 @@ ff::AccountCreationStatus ff::make_account(database& database, const std::string
 
     json["profile"] = nlohmann::json::object();
     json["uploads"] = uploads;
-    json["activated"] = base_email.empty();
+    json["activated"] = email.empty();
 
     if (needs_setup) {
         json["activated"] = true;
     }
 
-    for (auto& it : database.query("SELECT username FROM users WHERE username = ?;", base_username)) {
+    for (auto& it : database.query("SELECT username FROM users WHERE username = ?;", username)) {
         if (!it.empty()) {
             return ff::AccountCreationStatus::UsernameExists;
         }
     }
-    for (const auto& it : database.query("SELECT email FROM users WHERE email = ?;", base_email)) {
+    for (const auto& it : database.query("SELECT email FROM users WHERE email = ?;", email)) {
         if (!it.empty()) {
             return ff::AccountCreationStatus::EmailExists;
         }
     }
 
-    if (base_username.empty()) {
+    if (username.empty()) {
         return ff::AccountCreationStatus::InvalidUsername;
-    } else if (base_username.size() < ff::settings.username_min_length) {
+    } else if (username.size() < ff::settings.username_min_length) {
         return ff::AccountCreationStatus::UsernameTooShort;
-    } else if (base_username.size() > ff::settings.username_max_length) {
+    } else if (username.size() > ff::settings.username_max_length) {
         return ff::AccountCreationStatus::UsernameTooLong;
     }
 
-    for (auto& c : base_username) {
+    for (auto& c : username) {
         if ((std::find(ff::settings.allowed_characters.begin(), ff::settings.allowed_characters.end(), c) == ff::settings.allowed_characters.end()) &&
                 ff::settings.allow_all_characters == false) {
             return ff::AccountCreationStatus::InvalidUsername;
         }
     }
 
-    if (base_password.empty() || base_password.size() < ff::settings.password_min_length) {
+    if (password.empty() || password.size() < ff::settings.password_min_length) {
         return ff::AccountCreationStatus::PasswordTooShort;
-    } else if (base_password.size() > ff::settings.password_max_length) {
+    } else if (password.size() > ff::settings.password_max_length) {
         return ff::AccountCreationStatus::PasswordTooLong;
     }
 
     ff::insert_into_user_table(
             database,
-            base_username,
+            username,
             hashed_password,
             key,
-            base_email,
+            email,
             current_time,
             current_time,
-            base_ip_address,
-            base_user_agent,
+            ip_address,
+            user_agent,
             user_type,
             json.dump()
     );
@@ -318,14 +326,14 @@ ff::AccountCreationStatus ff::make_account(database& database, const std::string
         try {
             int64_t ct = scrypto::return_unix_millis();
             std::string activation_url = "/activate/" + scrypto::generate_random_string(32);
-            if (!database.exec("INSERT INTO activation_urls (url, created_at, username) VALUES (?, ?, ?);", activation_url, ct, base_username)) {
+            if (!database.exec("INSERT INTO activation_urls (url, created_at, username) VALUES (?, ?, ?);", activation_url, ct, username)) {
                 throw std::runtime_error{"Error inserting into the activation_urls table."};
             }
 
             limhamn::smtp::client::mail_properties mail_properties;
 
             mail_properties.from = ff::settings.email_from;
-            mail_properties.to = base_email;
+            mail_properties.to = email;
             mail_properties.subject = "Please activate your newly registered account.";
             mail_properties.data = "Please click the following link to activate your account: <a href=\"" + ff::settings.site_url + activation_url + "\">" + ff::settings.site_url + activation_url + "</a>";
             mail_properties.content_type = "text/html";
@@ -349,7 +357,7 @@ ff::AccountCreationStatus ff::make_account(database& database, const std::string
 }
 
 
-ff::ProfileUpdateStatus ff::update_profile(const limhamn::http::server::request& request, database& db) {
+ff::ProfileUpdateStatus ff::update_profile(const ssock::http::server::request& request, database& db) {
     std::string json{};
     std::string username{};
     std::string icon_path{};
