@@ -53,10 +53,6 @@ ff::Settings ff::load_settings(const std::string& _config_file) {
         if (config["filesystem"]["session_directory"]) settings.session_directory = config["filesystem"]["session_directory"].as<std::string>();
         if (config["filesystem"]["data_directory"]) settings.data_directory = config["filesystem"]["data_directory"].as<std::string>();
         if (config["filesystem"]["temp_directory"]) settings.temp_directory = config["filesystem"]["temp_directory"].as<std::string>();
-        if (config["filesystem"]["html_file"]) settings.html_file = config["filesystem"]["html_file"].as<std::string>();
-        if (config["filesystem"]["css_file"]) settings.css_file = config["filesystem"]["css_file"].as<std::string>();
-        if (config["filesystem"]["js_file"]) settings.script_file = config["filesystem"]["js_file"].as<std::string>();
-        if (config["filesystem"]["favicon_file"]) settings.favicon_file = config["filesystem"]["favicon_file"].as<std::string>();
         if (config["filesystem"]["access_file"]) settings.access_file = config["filesystem"]["access_file"].as<std::string>();
         if (config["filesystem"]["warning_file"]) settings.warning_file = config["filesystem"]["warning_file"].as<std::string>();
         if (config["filesystem"]["error_file"]) settings.error_file = config["filesystem"]["error_file"].as<std::string>();
@@ -72,8 +68,6 @@ ff::Settings ff::load_settings(const std::string& _config_file) {
         if (config["postgresql"]["port"]) settings.psql_port = config["postgresql"]["port"].as<int>();
         if (config["client"]["session_cookie_name"]) settings.session_cookie_name = config["client"]["session_cookie_name"].as<std::string>();
         if (config["site"]["url"]) settings.site_url = config["site"]["url"].as<std::string>();
-        if (config["site"]["title"]) settings.title = config["site"]["title"].as<std::string>();
-        if (config["site"]["description"]) settings.description = config["site"]["description"].as<std::string>();
         if (config["upload"]["max_request_size"]) settings.max_request_size = config["upload"]["max_request_size"].as<int64_t>();
         if (config["upload"]["max_file_size_hash"]) settings.max_file_size_hash = config["upload"]["max_file_size_hash"].as<int64_t>();
         if (config["upload"]["convert_images_to_webp"]) settings.convert_images_to_webp = config["upload"]["convert_images_to_webp"].as<bool>();
@@ -206,10 +200,6 @@ std::string ff::generate_default_config() {
     ss << "#   session_directory: The directory where session files are stored.\n";
     ss << "#   data_directory: The directory where data files are stored.\n";
     ss << "#   temp_directory: The directory where temporary files are stored.\n";
-    ss << "#   html_file: The path to the HTML file.\n";
-    ss << "#   css_file: The path to the CSS file.\n";
-    ss << "#   js_file: The path to the JS file.\n";
-    ss << "#   favicon_file: The path to the favicon file.\n";
     ss << "#   access_file: The path to the access log file.\n";
     ss << "#   warning_file: The path to the warning log file.\n";
     ss << "#   error_file: The path to the error log file.\n";
@@ -220,10 +210,6 @@ std::string ff::generate_default_config() {
     ss << "  session_directory: \"" << ff::settings.session_directory << "\"\n";
     ss << "  data_directory: \"" << ff::settings.data_directory << "\"\n";
     ss << "  temp_directory: \"" << ff::settings.temp_directory << "\"\n";
-    ss << "  html_file: \"" << ff::settings.html_file << "\"\n";
-    ss << "  css_file: \"" << ff::settings.css_file << "\"\n";
-    ss << "  js_file: \"" << ff::settings.script_file << "\"\n";
-    ss << "  favicon_file: \"" << ff::settings.favicon_file << "\"\n";
     ss << "  access_file: \"" << ff::settings.access_file << "\"\n";
     ss << "  warning_file: \"" << ff::settings.warning_file << "\"\n";
     ss << "  error_file: \"" << ff::settings.error_file << "\"\n";
@@ -261,12 +247,8 @@ std::string ff::generate_default_config() {
     ss << "\n";
     ss << "# Site options:\n";
     ss << "#   url: The URL of the site (e.g. https://example.com).\n";
-    ss << "#   title: The title of the site.\n";
-    ss << "#   description: The description of the site.\n";
     ss << "site:\n";
     ss << "  url: \"" << ff::settings.site_url << "\"\n";
-    ss << "  title: \"" << ff::settings.title << "\"\n";
-    ss << "  description: \"" << ff::settings.description << "\"\n";
     ss << "\n";
     ss << "# Upload options:\n";
     ss << "#   max_request_size: The maximum request size in bytes. Any larger will be rejected by the server\n";

@@ -6,12 +6,7 @@
 namespace ff {
     ssock::http::server::response handle_try_upload_post_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_try_upload_post_comment_endpoint(const ssock::http::server::request& request, database& db);
-    ssock::http::server::response handle_root_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_try_setup_endpoint(const ssock::http::server::request& request, database& db);
-    ssock::http::server::response handle_setup_endpoint(const ssock::http::server::request& request, database& db);
-    ssock::http::server::response handle_virtual_favicon_endpoint(const ssock::http::server::request& request, database& db);
-    ssock::http::server::response handle_virtual_stylesheet_endpoint(const ssock::http::server::request& request, database& db);
-    ssock::http::server::response handle_virtual_script_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_try_register_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_try_login_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_try_upload_forwarder_endpoint(const ssock::http::server::request& request, database& db);

@@ -7,64 +7,6 @@
 #include <static_exists.hpp>
 #include <endpoint_handlers.hpp>
 
-ssock::http::server::response ff::handle_root_endpoint(const ssock::http::server::request&, database&) {
-    ssock::http::server::response response{};
-
-    const auto prepare_file = [](const std::string& path) -> std::string {
-        static const std::string temp_file = settings.temp_directory + "/index.html";
-
-        if (static_exists.is_file(temp_file)) {
-            return temp_file;
-        }
-
-        std::filesystem::remove(temp_file);
-        std::filesystem::copy_file(path, temp_file);
-
-        // get domain from site url
-        std::string domain = settings.site_url;
-        if (domain.find("https://") != std::string::npos) {
-            domain = domain.substr(8);
-        } else if (domain.find("http://") != std::string::npos) {
-            domain = domain.substr(7);
-        }
-        if (domain.find('/') != std::string::npos) {
-            domain = domain.substr(0, domain.find('/'));
-        }
-        const std::vector<std::pair<std::string, std::string>> find_replace_table = {
-            {"{{ff_title}}", settings.title},
-            {"{{ff_description}}", settings.description},
-            {"{{ff_domain}}", domain},
-            {"{{ff_favicon_path}}", virtual_favicon_path},
-            {"{{ff_css_path}}", virtual_stylesheet_path},
-            {"{{ff_js_path}}", virtual_script_path},
-                {"{{ff_body_replace}}", needs_setup ? "<script>setup();</script>" : ""},
-            {"\n", ""},
-            {"\t", ""},
-        };
-
-        auto contents = open_file(temp_file);
-        for (const auto& it : find_replace_table) {
-            size_t pos = 0;
-            while ((pos = contents.find(it.first, pos)) != std::string::npos) {
-                contents.replace(pos, it.first.length(), it.second);
-                pos += it.second.length();
-            }
-        }
-
-        std::ofstream file(temp_file, std::ios::out);
-        file << contents;
-        file.close();
-
-        return temp_file;
-    };
-
-    response.content_type = "text/html";
-    response.http_status = 200;
-    response.body = ff::cache_manager.open_file(prepare_file(settings.html_file));
-
-    return response;
-}
-
 ssock::http::server::response ff::handle_try_upload_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
     ssock::http::server::response response{};
 
@@ -157,10 +99,6 @@ ssock::http::server::response ff::handle_try_upload_file_endpoint(const ssock::h
     }
 
     return response;
-}
-
-ssock::http::server::response ff::handle_setup_endpoint(const ssock::http::server::request& request, database& db) {
-    return handle_root_endpoint(request, db);
 }
 
 ssock::http::server::response ff::handle_try_setup_endpoint(const ssock::http::server::request& request, database& db) {
@@ -273,82 +211,6 @@ ssock::http::server::response ff::handle_try_setup_endpoint(const ssock::http::s
         response.http_status = 400;
         return response;
     }
-}
-
-ssock::http::server::response ff::handle_virtual_favicon_endpoint(const ssock::http::server::request&, database&) {
-    ssock::http::server::response response{};
-
-    response.content_type = "image/svg+xml";
-    response.http_status = 200;
-
-    if (settings.favicon_file.empty() || !static_exists.is_file(settings.favicon_file)) {
-        response.http_status = 200;
-        response.body = "";
-        return response;
-    }
-
-    response.body = ff::cache_manager.open_file(settings.favicon_file);
-
-    return response;
-}
-
-ssock::http::server::response ff::handle_virtual_stylesheet_endpoint(const ssock::http::server::request&, database&) {
-    ssock::http::server::response response{};
-
-    response.content_type = "text/css";
-    response.http_status = 200;
-
-    if (settings.css_file.empty() || !static_exists.is_file(settings.css_file)) {
-        response.http_status = 200;
-        response.body = "";
-        return response;
-    }
-
-    response.body = ff::cache_manager.open_file(settings.css_file);
-
-    return response;
-}
-
-ssock::http::server::response ff::handle_virtual_script_endpoint(const ssock::http::server::request&, database&) {
-    ssock::http::server::response response;
-
-    response.content_type = "text/javascript";
-    response.http_status = 200;
-
-    // TODO: Just like the name, this function is UGLY AS FUCK, and does not belong anywhere near
-    // a project like this. But I simply cannot be bothered to write a JS minifier myself, nor
-    // am I aware of any C++ library for doing such a thing, and I am therefore just going to call uglifyjs.
-#ifndef FF_DEBUG
-    const auto uglify_file = [](const std::string& path) -> std::string {
-        static const std::string temp_file = settings.temp_directory + "/ff_temp.js";
-        if (static_exists.is_file(temp_file)) {
-            return temp_file;
-        }
-        if (std::system("which uglifyjs > /dev/null") != 0) {
-            return path;
-        }
-
-        std::filesystem::remove(temp_file);
-        std::filesystem::copy_file(path, temp_file);
-
-        // run uglifyjs on the file
-        std::string command = "uglifyjs " + temp_file + " -o " + temp_file;
-        if (std::system(command.c_str()) != 0) {
-        	return path;
-        }
-
-        return temp_file;
-    };
-#endif
-
-#if FF_DEBUG
-    response.body = ff::cache_manager.open_file(settings.script_file);
-#else
-    std::string path = uglify_file(settings.script_file);
-    response.body = ff::cache_manager.open_file(path);
-#endif
-
-    return response;
 }
 
 ssock::http::server::response ff::handle_api_try_register_endpoint(const ssock::http::server::request& request, database& db) {

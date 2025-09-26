@@ -100,66 +100,6 @@ void ff::prepare_wd() {
         ff::logger.write_to_log(limhamn::logger::type::notice, "The temp directory was created.\n");
     }
 
-    if (!check_if_exists(ff::settings.css_file)) {
-        std::filesystem::path css_file_path{ff::settings.css_file};
-        std::filesystem::path css_file_directory{css_file_path.parent_path()};
-
-        ff::logger.write_to_log(limhamn::logger::type::notice, "The CSS file directory does not exist. Creating it.\n");
-        if (!create_directory(css_file_directory)) {
-            log_error("Failed to create the CSS file directory. Do I have adequate permissions? Unrecoverable error.\n");
-        }
-        ff::logger.write_to_log(limhamn::logger::type::notice, "The CSS file directory was created.\n");
-        ff::logger.write_to_log(limhamn::logger::type::warning, "The CSS file does not exist. Creating a blank file. ff-web will not operate correctly without a stylesheet!!\n");
-
-        std::ofstream css_file{ff::settings.css_file};
-        if (css_file.is_open() == false) {
-            ff::logger.write_to_log(limhamn::logger::type::warning, "CSS file could not be opened.\n");
-        } else {
-            css_file << "/* ff-web CSS File */\n\n/* Add your CSS here. */\n";
-            css_file.close();
-        }
-    }
-
-    if (!check_if_exists(ff::settings.html_file)) {
-        std::filesystem::path html_file_path{ff::settings.html_file};
-        std::filesystem::path html_file_directory{html_file_path.parent_path()};
-
-        ff::logger.write_to_log(limhamn::logger::type::notice, "The HTML file directory does not exist. Creating it.\n");
-        if (!create_directory(html_file_directory)) {
-            log_error("Failed to create the HTML file directory. Do I have adequate permissions? Unrecoverable error.\n");
-        }
-        ff::logger.write_to_log(limhamn::logger::type::notice, "The HTML file directory was created.\n");
-        ff::logger.write_to_log(limhamn::logger::type::warning, "The HTML file does not exist. Creating a blank file. ff-web will not operate correctly without an HTML file!!\n");
-
-        std::ofstream html_file{ff::settings.html_file};
-        if (html_file.is_open() == false) {
-            ff::logger.write_to_log(limhamn::logger::type::warning, "HTML file could not be opened.\n");
-        } else {
-            html_file << "The sysadmin responsible for this site has not set up an index file. If you intended to use this instance solely for the API, you can ignore this message.\n";
-            html_file.close();
-        }
-    }
-
-    if (!check_if_exists(ff::settings.script_file)) {
-        std::filesystem::path script_file_path{ff::settings.script_file};
-        std::filesystem::path script_file_directory{script_file_path.parent_path()};
-
-        ff::logger.write_to_log(limhamn::logger::type::notice, "The JS file directory does not exist. Creating it.\n");
-        if (!create_directory(script_file_directory)) {
-            log_error("Failed to create the JS file directory. Do I have adequate permissions? Unrecoverable error.\n");
-        }
-        ff::logger.write_to_log(limhamn::logger::type::notice, "The JS file directory was created.\n");
-        ff::logger.write_to_log(limhamn::logger::type::warning, "The JS file does not exist. Creating a blank file. ff-web will not operate correctly without a stylesheet!!\n");
-
-        std::ofstream script_file{ff::settings.script_file};
-        if (script_file.is_open() == false) {
-            ff::logger.write_to_log(limhamn::logger::type::warning, "JS file could not be opened.\n");
-        } else {
-            script_file << "/* ff-web JS File */\n\n/* Add your JS here. */\n";
-            script_file.close();
-        }
-    }
-
     if (!check_if_exists(ff::settings.sqlite_database_file) && !ff::settings.enabled_database) {
         std::filesystem::path database_file_path{ff::settings.sqlite_database_file};
         std::filesystem::path database_file_directory{database_file_path.parent_path()};
@@ -169,22 +109,6 @@ void ff::prepare_wd() {
             log_error("Failed to create the database file directory. Do I have adequate permissions? Unrecoverable error.\n");
         }
         ff::logger.write_to_log(limhamn::logger::type::notice, "The database file directory was created.\n");
-    }
-
-    if (!check_if_exists(ff::settings.favicon_file) && !ff::settings.favicon_file.empty()) {
-        std::filesystem::path favicon_file_path{ff::settings.favicon_file};
-        std::filesystem::path favicon_file_directory{favicon_file_path.parent_path()};
-
-        if (!check_if_exists(favicon_file_directory)) {
-            ff::logger.write_to_log(limhamn::logger::type::notice, "The favicon file directory does not exist. Creating it.\n");
-
-            if (!create_directory(favicon_file_directory)) {
-                ff::logger.write_to_log(limhamn::logger::type::error, "Failed to create the favicon file directory. Do I have adequate permissions? Unrecoverable error.\n");
-                std::exit(EXIT_FAILURE);
-            }
-        }
-
-        ff::logger.write_to_log(limhamn::logger::type::warning, "The favicon file does not exist.\n");
     }
 
     remove_all_in_directory(ff::settings.temp_directory);
@@ -259,21 +183,6 @@ void ff::start_server() {
             ff::logger.write_to_log(limhamn::logger::type::access, "Request received from " + request.ip_address + " to " + request.endpoint + " received, handling it.\n");
 
             const std::unordered_map<std::string, std::function<ssock::http::server::response(const ssock::http::server::request&, ff::database&)>> handlers{
-                {virtual_favicon_path, ff::handle_virtual_favicon_endpoint},
-                {virtual_stylesheet_path, ff::handle_virtual_stylesheet_endpoint},
-                {virtual_script_path, ff::handle_virtual_script_endpoint},
-
-                {"/", ff::handle_root_endpoint},
-                {"/browse", ff::handle_root_endpoint},
-                {"/sandbox", ff::handle_root_endpoint},
-                {"/view", ff::handle_root_endpoint},
-                {"/post", ff::handle_root_endpoint},
-                {"/forum", ff::handle_root_endpoint},
-                {"/topic", ff::handle_root_endpoint},
-                {"/upload", ff::handle_root_endpoint},
-                {"/login", ff::handle_root_endpoint},
-                {"/register", ff::handle_root_endpoint},
-                {"/admin", ff::handle_root_endpoint},
                 {"/try_setup", ff::handle_try_setup_endpoint},
 
                 {"/api/try_upload_forwarder", ff::handle_try_upload_forwarder_endpoint},
@@ -315,11 +224,7 @@ void ff::start_server() {
                 //{"/api/pin_post_to_topic", ff::handle_api_pin_post_to_topic},
             };
             const std::unordered_map<std::string, std::function<ssock::http::server::response(const ssock::http::server::request&, ff::database&)>> setup_handlers{
-                {virtual_favicon_path, ff::handle_virtual_favicon_endpoint},
-                {virtual_stylesheet_path, ff::handle_virtual_stylesheet_endpoint},
-                {virtual_script_path, ff::handle_virtual_script_endpoint},
                 {"/try_setup", ff::handle_try_setup_endpoint},
-                {"/setup", ff::handle_setup_endpoint}
             };
 
             // handle custom paths
@@ -343,13 +248,13 @@ void ff::start_server() {
                 }
             }
 
-            if (needs_setup && setup_handlers.find(request.endpoint) != setup_handlers.end()) {
+            if (needs_setup && setup_handlers.contains(request.endpoint)) {
                 return setup_handlers.at(request.endpoint)(request, *database);
             } else if (needs_setup) {
                 return setup_handlers.at("/setup")(request, *database);
             }
 
-            if (handlers.find(request.endpoint) != handlers.end()) {
+            if (handlers.contains(request.endpoint)) {
                 return handlers.at(request.endpoint)(request, *database);
             }
 
@@ -366,7 +271,7 @@ void ff::start_server() {
 
                 if (ff::is_file(*database, file_path.string())) {
                     const auto& h = ff::download_file(*database, ff::UserProperties{
-                        .username = request.session.find("username") != request.session.end() ? request.session.at("username") : "",
+                        .username = request.session.contains("username") ? request.session.at("username") : "",
                         .ip_address = request.ip_address,
                         .user_agent = request.user_agent,
                     }, file_path.string());

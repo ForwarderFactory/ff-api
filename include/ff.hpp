@@ -21,10 +21,6 @@ namespace ff {
     inline limhamn::logger::logger logger{};
     inline CacheManager cache_manager{};
     inline bool fatal{false};
-    inline static const std::string virtual_stylesheet_path{"/css/index.css"};
-    inline static const std::string virtual_font_path{"/fonts/font.ttf"};
-    inline static const std::string virtual_favicon_path{"/img/favicon.svg"};
-    inline static const std::string virtual_script_path{"/js/index.js"};
     inline bool needs_setup{false};
 
     void start_server();
