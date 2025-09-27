@@ -123,9 +123,9 @@ ff::Settings ff::load_settings(const std::string& _config_file) {
 std::string ff::generate_default_config() {
     std::stringstream ss;
 
-    ss << "# ff-web Configuration File\n";
+    ss << "# ff-api Configuration File\n";
     ss << "#\n";
-    ss << "# This is the configuration file for ff-web version " << FF_VERSION << ". You can change the settings to your liking.\n";
+    ss << "# This is the configuration file for ff-api version " << FF_VERSION << ". You can change the settings to your liking.\n";
     ss << "# It should be placed in /etc/ff/, named config.yaml. If you want to use a different file, you can set the FF_CONFIG_FILE environment variable or pass --config-file.\n";
     ss << "#\n";
     ss << "# Logger options:\n";

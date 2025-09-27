@@ -15,8 +15,8 @@
 void ff::print_help(const bool stream) {
     std::stringstream ss;
 
-    ss << "ff-web [options]" << "\n";
-    ss << "  -p, --port               Specify the port number to run ff-web on" << "\n";
+    ss << "ff-api [options]" << "\n";
+    ss << "  -p, --port               Specify the port number to run ff-api on" << "\n";
     ss << "  -c, --config-file        Specify the configuration file to use" << "\n";
     ss << "  -gc, --generate-config   Generate a default configuration file" << "\n";
     ss << "  -he, --halt-on-error     Halt the server on error" << "\n";

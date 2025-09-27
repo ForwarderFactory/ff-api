@@ -5,6 +5,18 @@ if ! command -v apt-get >/dev/null 2>&1; then
     exit 1
 fi
 
+# install ssock if unavailable
+[ ! -f "/usr/local/include/ssock.hpp" ] && [ ! -f "/usr/include/ssock.hpp" ] {
+    git clone --recursive https://github.com/jacnils/ssock
+    cd ssock
+    mkdir -p build; cd build
+    cmake ..
+    cmake --build .
+    cmake --install .
+    cd ../../
+    [ -d "ssock/" ] && rm -rf ssock/
+}
+
 apt-get update && apt-get install -y \
     cmake \
     g++ \
@@ -34,38 +46,31 @@ apt-get update && apt-get install -y \
 
 npm install -g uglify-js
 
-groupadd -r ff-web && useradd -r -g ff-web ff-web
+groupadd -r ff-api && useradd -r -g ff-api ff-api
 mkdir -p /etc/ff /var/log/ff /var/db/ff /var/lib/ff
 
-rm -rf ff-web
-git clone --recursive https://github.com/ForwarderFactory/ff-web; cd ff-web || exit 1
+rm -rf ff-api
+git clone --recursive https://github.com/ForwarderFactory/ff-api; cd ff-api || exit 1
 mkdir -p build && cd build || exit 1
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
 make && make install || exit 1
 cd ..; rm -rf build
 
-cp -r css/ /etc/ff/
-cp -r js/ /etc/ff/
-cp -r html/ /etc/ff/
-cp -r img/ /etc/ff/
-cp -r fonts/ /etc/ff/
-cp -r audio/ /etc/ff/
+[ ! -f "/etc/ff/config.yaml" ] && ff-api -gc > /etc/ff/config.yaml
 
-[ ! -f "/etc/ff/config.yaml" ] && ff-web -gc > /etc/ff/config.yaml
-
-chown -R ff-web:ff-web /etc/ff /var/log/ff /var/db/ff /var/lib/ff
+chown -R ff-api:ff-api /etc/ff /var/log/ff /var/db/ff /var/lib/ff
 chmod -R 755 /etc/ff /var/log/ff /var/db/ff /var/lib/ff
 
-cat > /etc/systemd/system/ff-web.service <<EOF
+cat > /etc/systemd/system/ff-api.service <<EOF
 [Unit]
-Description=ff-web
+Description=ff-api
 After=network.target
 
 [Service]
 Type=simple
-User=ff-web
-Group=ff-web
-ExecStart=ff-web
+User=ff-api
+Group=ff-api
+ExecStart=ff-api
 Restart=on-failure
 
 [Install]
@@ -73,5 +78,5 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable ff-web
-systemctl restart ff-web
+systemctl enable ff-api
+systemctl restart ff-api

@@ -1,6 +1,6 @@
-# ff-web
+# ff-api
 
-Source code for the [Forwarder Factory](https://forwarderfactory.com) website
+Source code for the [Forwarder Factory](https://forwarderfactory.com) API server
 
 ## To be done
 
@@ -33,7 +33,7 @@ Debian/Ubuntu: `sudo apt install libboost-all-dev libssl-dev libyaml-cpp-dev lib
 ## Building
 
 ```bash
-git clone --recursive https://github.com/ForwarderFactory/ff-web; cd ff-web
+git clone --recursive https://github.com/ForwarderFactory/ff-api; cd ff-api
 mkdir build; cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local # -DFF_ENABLE_SQLITE3=true -DFF_ENABLE_POSTGRESQL=true
 cmake --build .

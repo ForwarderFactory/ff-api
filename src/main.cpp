@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 
     ff::logger.override_properties(logger_properties);
 
-    ff::logger.write_to_log(limhamn::logger::type::notice, "ff-web is now running on port " + std::to_string(ff::settings.port) + ".\n");
+    ff::logger.write_to_log(limhamn::logger::type::notice, "ff-api is now running on port " + std::to_string(ff::settings.port) + ".\n");
 #ifdef FF_DEBUG
     ff::logger.write_to_log(limhamn::logger::type::notice, "Debug mode is enabled. Do not release this, or you will suffer the wrath of Satan himself, and the entire universe will collapse.\n");
 #endif
