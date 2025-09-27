@@ -10,7 +10,8 @@ Don't know how realistic this is, but here's a list of things that I want to see
 
 ## Dependencies
 
-- Boost (beast, asio, system, url) - for networking
+- ssock - for networking, HTTP
+- Boost (asio, system, url) - for SMTP mainly
 - OpenSSL - SSL/TLS and general cryptography
 - yaml-cpp - for configuration files
 - SQLite3 - for database (optional, if PostgreSQL is enabled)
@@ -29,6 +30,10 @@ macOS: `brew install boost openssl yaml-cpp [sqlite3, postgresql] nlohmann-json 
 Debian/Ubuntu: `sudo apt install libboost-all-dev libssl-dev libyaml-cpp-dev libsqlite3-dev libpq-dev nlohmann-json3-dev cmake npm ffmpeg imagemagick libmagick++-dev`
 
 `npm install uglify-js -g` (optional, DO NOT FORGET THE `-g` FLAG!!!)
+
+To install [ssock](https://github.com/jacnils/ssock), utilize any available packages if available, otherwise build it yourself.
+
+**Do not forget to recursively clone the repository; wrappers are included automatically in the form of submodules.**
 
 ## Building
 
