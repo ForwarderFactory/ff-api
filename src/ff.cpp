@@ -162,6 +162,7 @@ void ff::start_server() {
 
         if (!ff::ensure_admin_account_exists(*database)) {
             ff::needs_setup = true;
+        	ff::logger.write_to_log(limhamn::logger::type::notice, "Setup is required, please make a request to /api/try_setup\n");
         }
 
         ssock::http::server::sync_server server(ssock::http::server::server_settings{
@@ -183,10 +184,10 @@ void ff::start_server() {
             ff::logger.write_to_log(limhamn::logger::type::access, "Request received from " + request.ip_address + " to " + request.endpoint + " received, handling it.\n");
 
             const std::unordered_map<std::string, std::function<ssock::http::server::response(const ssock::http::server::request&, ff::database&)>> handlers{
-                {"/try_setup", ff::handle_try_setup_endpoint},
+                {"/api/try_setup", ff::handle_api_try_setup_endpoint},
 
-                {"/api/try_upload_forwarder", ff::handle_try_upload_forwarder_endpoint},
-                {"/api/try_upload_file", ff::handle_try_upload_file_endpoint},
+                {"/api/try_upload_forwarder", ff::handle_api_try_upload_forwarder_endpoint},
+                {"/api/try_upload_file", ff::handle_api_try_upload_file_endpoint},
                 {"/api/try_login", ff::handle_api_try_login_endpoint},
                 {"/api/try_register", ff::handle_api_try_register_endpoint},
                 {"/api/get_forwarders", ff::handle_api_get_forwarders_endpoint},
@@ -224,7 +225,7 @@ void ff::start_server() {
                 //{"/api/pin_post_to_topic", ff::handle_api_pin_post_to_topic},
             };
             const std::unordered_map<std::string, std::function<ssock::http::server::response(const ssock::http::server::request&, ff::database&)>> setup_handlers{
-                {"/try_setup", ff::handle_try_setup_endpoint},
+                {"/try_setup", ff::handle_api_try_setup_endpoint},
             };
 
             // handle custom paths
@@ -251,7 +252,7 @@ void ff::start_server() {
             if (needs_setup && setup_handlers.contains(request.endpoint)) {
                 return setup_handlers.at(request.endpoint)(request, *database);
             } else if (needs_setup) {
-                return setup_handlers.at("/setup")(request, *database);
+                return setup_handlers.at("/api/try_setup")(request, *database);
             }
 
             if (handlers.contains(request.endpoint)) {

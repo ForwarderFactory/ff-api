@@ -7,7 +7,7 @@
 #include <static_exists.hpp>
 #include <endpoint_handlers.hpp>
 
-ssock::http::server::response ff::handle_try_upload_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
+ssock::http::server::response ff::handle_api_try_upload_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
     ssock::http::server::response response{};
 
     if (request.body.empty()) {
@@ -54,7 +54,7 @@ ssock::http::server::response ff::handle_try_upload_forwarder_endpoint(const sso
     return response;
 }
 
-ssock::http::server::response ff::handle_try_upload_file_endpoint(const ssock::http::server::request& request, database& db) {
+ssock::http::server::response ff::handle_api_try_upload_file_endpoint(const ssock::http::server::request& request, database& db) {
     ssock::http::server::response response{};
 
     if (request.body.empty()) {
@@ -101,7 +101,7 @@ ssock::http::server::response ff::handle_try_upload_file_endpoint(const ssock::h
     return response;
 }
 
-ssock::http::server::response ff::handle_try_setup_endpoint(const ssock::http::server::request& request, database& db) {
+ssock::http::server::response ff::handle_api_try_setup_endpoint(const ssock::http::server::request& request, database& db) {
     ssock::http::server::response response{};
     response.content_type = "application/json";
 

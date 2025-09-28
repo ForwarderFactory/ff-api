@@ -26,7 +26,7 @@ namespace ff {
     void start_server();
     std::string get_json_from_table(database& db, const std::string& table, const std::string& key, const std::string& value);
     bool set_json_in_table(database& db, const std::string& table, const std::string& key, const std::string& value, const std::string& json);
-    void insert_into_user_table(database& database, const std::string& username, const std::string& password,
+    void insert_into_user_table(database& database, const std::string& username, const std::string& password, const std::string& salt,
         const std::string& key, const std::string& email, int64_t created_at, int64_t updated_at, const std::string& ip_address,
         const std::string& user_agent, UserType user_type, const std::string& json);
     std::pair<LoginStatus, std::string> try_login(database& database, const std::string& username, const std::string& password,

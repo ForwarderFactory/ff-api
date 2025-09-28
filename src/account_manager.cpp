@@ -137,7 +137,7 @@ std::string ff::get_username_from_email(database& database, const std::string& e
 }
 
 // Warning: This function does not check credentials, nor does it check if the user already exists, or if the values are valid or even safe.
-void ff::insert_into_user_table(database& database, const std::string& username, const std::string& password,
+void ff::insert_into_user_table(database& database, const std::string& username, const std::string& password, const std::string& salt,
         const std::string& key, const std::string& email, const int64_t created_at, const int64_t updated_at, const std::string& ip_address,
         const std::string& user_agent, UserType user_type, const std::string& json) {
 
@@ -153,9 +153,10 @@ void ff::insert_into_user_table(database& database, const std::string& username,
     logger.write_to_log(limhamn::logger::type::notice, "Username: " + username + ", Password: " + password + ", Key: " + key + ", Email: " + email + ", Created at: " + std::to_string(created_at) + ", Updated at: " + std::to_string(updated_at) + ", IP Address: " + ip_address + ", User Agent: " + ua + ", User Type: " + std::to_string(static_cast<int>(user_type)) + ", JSON: " + json + "\n");
 #endif
 
-    if (!database.exec("INSERT INTO users (username, password, key, email, created_at, updated_at, ip_address, user_agent, user_type, json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+    if (!database.exec("INSERT INTO users (username, password, salt, key, email, created_at, updated_at, ip_address, user_agent, user_type, json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
                 username,
                 password,
+                salt,
                 key,
                 email,
                 created_at,
@@ -171,7 +172,7 @@ void ff::insert_into_user_table(database& database, const std::string& username,
 std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const std::string& username, const std::string& password,
         const std::string& ip_address, const std::string& user_agent, ssock::http::server::response& response) {
     const std::string base_username{username};
-    const std::string base_password{password};
+    std::string base_password{password};
     const std::string base_ip_address{ip_address};
     const std::string base_user_agent{user_agent};
 
@@ -184,6 +185,10 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
         if (it.empty()) {
             return {ff::LoginStatus::InvalidUsername, {}};
         }
+
+    	if (it.contains("salt") && it.at("salt").empty()) {
+    		base_password += it.at("salt");
+    	}
 
         if (!scrypto::password_verify(base_password, it.at("password"))) {
             return {ff::LoginStatus::InvalidPassword, {}};
@@ -202,16 +207,6 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
 
         response.session["username"] = base_username;
         response.session["key"] = key;
-
-    	/*
-        response.cookies.push_back({"username", base_username, .path = "/",
-        	.same_site = "Strict",
-        	.http_only = true,
-#ifndef FF_DEBUG
-                .secure = true,
-#endif
-        });
-        */
 
         ssock::http::server::cookie c;
     	c.name = "username";
@@ -252,7 +247,6 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
 // If such case is not taken, it may be possible to create an account with elevated privileges.
 ff::AccountCreationStatus ff::make_account(database& database, const std::string& username, const std::string& password,
         const std::string& email, const std::string& ip_address, const std::string& user_agent, UserType user_type) {
-    const std::string hashed_password{scrypto::password_hash(password)};
     const std::string key{scrypto::generate_key({password})};
     const int64_t current_time{scrypto::return_unix_millis()};
     constexpr int uploads{0};
@@ -308,10 +302,15 @@ ff::AccountCreationStatus ff::make_account(database& database, const std::string
         return ff::AccountCreationStatus::PasswordTooLong;
     }
 
+	// generate salt
+	auto salt = scrypto::generate_random_string(8);
+    const std::string hashed_password{scrypto::password_hash(password+salt)};
+
     ff::insert_into_user_table(
             database,
             username,
             hashed_password,
+            salt,
             key,
             email,
             current_time,

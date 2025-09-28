@@ -6,11 +6,11 @@
 namespace ff {
     ssock::http::server::response handle_try_upload_post_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_try_upload_post_comment_endpoint(const ssock::http::server::request& request, database& db);
-    ssock::http::server::response handle_try_setup_endpoint(const ssock::http::server::request& request, database& db);
+    ssock::http::server::response handle_api_try_setup_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_try_register_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_try_login_endpoint(const ssock::http::server::request& request, database& db);
-    ssock::http::server::response handle_try_upload_forwarder_endpoint(const ssock::http::server::request& request, database& db);
-    ssock::http::server::response handle_try_upload_file_endpoint(const ssock::http::server::request& request, database& db);
+    ssock::http::server::response handle_api_try_upload_forwarder_endpoint(const ssock::http::server::request& request, database& db);
+    ssock::http::server::response handle_api_try_upload_file_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_delete_forwarder_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_delete_file_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_get_forwarders_endpoint(const ssock::http::server::request& request, database& db);

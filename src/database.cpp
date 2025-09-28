@@ -16,6 +16,7 @@ void ff::setup_database(database& database) {
     // id: the user id
     // username: the username of the user
     // password: the password of the user
+	// salt: the salt associated with the user's password
     // key: the key, stored in the database and in the user's cookie, used to authenticate the user
     // email: the email of the user
     // created_at: the time the user was created
@@ -24,7 +25,7 @@ void ff::setup_database(database& database) {
     // user_agent: the user agent of the user
     // user_type: 0 = User, 1 = Administrator
     // json: the json of the user
-    if (!database.exec("CREATE TABLE IF NOT EXISTS users (" + primary + ", username TEXT NOT NULL, password TEXT NOT NULL, key TEXT NOT NULL, email TEXT NOT NULL, created_at bigint NOT NULL, updated_at bigint NOT NULL, ip_address TEXT NOT NULL, user_agent TEXT NOT NULL, user_type bigint NOT NULL, json TEXT NOT NULL);")) {
+    if (!database.exec("CREATE TABLE IF NOT EXISTS users (" + primary + ", username TEXT NOT NULL, password TEXT NOT NULL, salt TEXT NOT NULL, key TEXT NOT NULL, email TEXT NOT NULL, created_at bigint NOT NULL, updated_at bigint NOT NULL, ip_address TEXT NOT NULL, user_agent TEXT NOT NULL, user_type bigint NOT NULL, json TEXT NOT NULL);")) {
         throw std::runtime_error{"Error creating the users table."};
     }
 
