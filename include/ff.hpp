@@ -30,7 +30,7 @@ namespace ff {
         const std::string& key, const std::string& email, int64_t created_at, int64_t updated_at, const std::string& ip_address,
         const std::string& user_agent, UserType user_type, const std::string& json);
     std::pair<LoginStatus, std::string> try_login(database& database, const std::string& username, const std::string& password,
-        const std::string& ip_address, const std::string& user_agent, ssock::http::server::response& response);
+        const std::string& ip_address, const std::string& user_agent, const std::string& otp_code, ssock::http::server::response& response);
     AccountCreationStatus make_account(database& database, const std::string& username, const std::string& password, const std::string& email,
         const std::string& ip_address, const std::string& user_agent, UserType user_type);
     std::pair<UploadStatus, std::string> try_upload_forwarder(const ssock::http::server::request& req, database& db);

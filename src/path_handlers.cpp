@@ -370,6 +370,7 @@ ssock::http::server::response ff::handle_api_try_login_endpoint(const ssock::htt
 #endif
 
     std::string username{};
+	std::string otp_code{};
 
     if (input_json.find("password") == input_json.end() || !input_json.at("password").is_string()) {
         nlohmann::json json;
@@ -402,6 +403,10 @@ ssock::http::server::response ff::handle_api_try_login_endpoint(const ssock::htt
         return response;
     }
 
+	if (input_json.find("otp_code") != input_json.end() && input_json.at("otp_code").is_string()) {
+		otp_code = input_json.at("otp_code").get<std::string>();
+	}
+
     const std::string& password = input_json.at("password").get<std::string>();
     const std::string& ip_address = request.ip_address;
     const std::string& user_agent = request.user_agent;
@@ -412,6 +417,7 @@ ssock::http::server::response ff::handle_api_try_login_endpoint(const ssock::htt
             password,
             ip_address,
             user_agent,
+            otp_code,
             response
     );
 
@@ -429,6 +435,7 @@ ssock::http::server::response ff::handle_api_try_login_endpoint(const ssock::htt
             {LoginStatus::InvalidPassword, {"FF_INVALID_PASSWORD", "Invalid password."}},
             {LoginStatus::Inactive, {"FF_NOT_ACTIVATED", "Account not activated. Check your email!"}},
             {LoginStatus::Banned, {"FF_BANNED", "Banned."}},
+        	{LoginStatus::Email2FARequired, {"FF_EMAIL_2FA_REQUIRED", "Email 2FA required."}},
         };
 
         if (error_map.find(status.first) == error_map.end()) {
@@ -4708,4 +4715,8 @@ ssock::http::server::response ff::handle_api_delete_comment_post_endpoint(const 
 		response.body = ret.dump();
 		return response;
 	}
+}
+
+ssock::http::server::response ff::handle_api_update_user_settings(const ssock::http::server::request& request, database& db) {
+	// update json["enable_email_2fa"] and shit here ;)
 }

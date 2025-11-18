@@ -8,5 +8,6 @@ namespace ff {
         InvalidUsername,
         InvalidPassword,
         Banned,
+        Email2FARequired,
     };
 } // namespace ff

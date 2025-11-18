@@ -170,7 +170,7 @@ void ff::insert_into_user_table(database& database, const std::string& username,
 }
 
 std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const std::string& username, const std::string& password,
-        const std::string& ip_address, const std::string& user_agent, ssock::http::server::response& response) {
+        const std::string& ip_address, const std::string& user_agent, const std::string& otp_code, ssock::http::server::response& response) {
     const std::string base_username{username};
     std::string base_password{password};
     const std::string base_ip_address{ip_address};
@@ -204,6 +204,72 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
         if (settings.enable_email_verification && !user_is_verified(database, base_username)) {
             return {ff::LoginStatus::Inactive, {}};
         }
+
+    	if (settings.enable_email_verification && it.at("email").empty()) {
+			return {ff::LoginStatus::Inactive, {}};
+		}
+
+    	nlohmann::json u_json{};
+    	try {
+    		u_json = nlohmann::json::parse(ff::get_json_from_table(database, "users", "username", base_username));
+    	} catch (const std::exception&) {
+			return {ff::LoginStatus::Failure, {}};
+		}
+
+    	if (settings.enable_email_verification && !it.at("email").empty() &&
+    		u_json.contains("enabled_email_2fa") && u_json.at("enabled_email_2fa").is_boolean() &&
+    		u_json.at("enabled_email_2fa").get<bool>() && otp_code.empty()) {
+
+    		// generate 2FA code
+    		std::string code = scrypto::generate_random_string(8, "0123456789");
+    		u_json["email_2fa_code"] = code;
+    		u_json["email_2fa_created_at"] = scrypto::return_unix_millis();
+    		u_json["email_2fa_valid_for"] = 10 * 60 * 1000; // 10 minutes
+    		if (!ff::set_json_in_table(database, "users", "username", base_username, u_json.dump())) {
+				return {ff::LoginStatus::Failure, {}};
+			}
+
+    		// compose email
+    		limhamn::smtp::client::mail_properties mail_properties;
+    		mail_properties.from = ff::settings.email_from;
+    		mail_properties.to = it.at("email");
+    		mail_properties.subject = "OTP code for user '" + base_username + "'";
+    		mail_properties.data = "Your OTP code is: <b>" + code + "</b>. It is valid for 10 minutes.";
+    		mail_properties.content_type = "text/html";
+    		mail_properties.username = ff::settings.email_username;
+    		mail_properties.password = ff::settings.email_password;
+    		mail_properties.smtp_server = ff::settings.smtp_server;
+    		mail_properties.smtp_port = ff::settings.smtp_port;
+    		limhamn::smtp::client::client{mail_properties}; // send the email
+    		return {ff::LoginStatus::Email2FARequired, {}};
+    	} else if (settings.enable_email_verification && !it.at("email").empty() && u_json.contains("enabled_email_2fa") && u_json.at("enabled_email_2fa").is_boolean() && u_json.at("enabled_email_2fa").get<bool>()
+    		&& !otp_code.empty()) {
+    		// verify 2FA code
+    		if (!u_json.contains("email_2fa_code") || !u_json.at("email_2fa_code").is_string() ||
+				!u_json.contains("email_2fa_created_at") || !u_json.at("email_2fa_created_at").is_number_integer() ||
+				!u_json.contains("email_2fa_valid_for") || !u_json.at("email_2fa_valid_for").is_number_integer()) {
+
+    			return {ff::LoginStatus::Failure, {}};
+    		}
+
+    		// check if code is expired
+    		int64_t created_at = u_json.at("email_2fa_created_at").get<int64_t>();
+    		int64_t valid_for = u_json.at("email_2fa_valid_for").get<int64_t>();
+    		if (scrypto::return_unix_millis() > created_at + valid_for) {
+				return {ff::LoginStatus::Failure, {}};
+			}
+    		if (u_json.at("email_2fa_code").get<std::string>() != otp_code) {
+    			return {ff::LoginStatus::Failure, {}};
+    		}
+
+    		// remove 2FA code from json
+    		u_json.erase("email_2fa_code");
+    		u_json.erase("email_2fa_created_at");
+    		u_json.erase("email_2fa_valid_for");
+    		if (!ff::set_json_in_table(database, "users", "username", base_username, u_json.dump())) {
+    			return {ff::LoginStatus::Failure, {}};
+    		}
+    	}
 
         response.session["username"] = base_username;
         response.session["key"] = key;
@@ -265,6 +331,7 @@ ff::AccountCreationStatus ff::make_account(database& database, const std::string
     json["profile"] = nlohmann::json::object();
     json["uploads"] = uploads;
     json["activated"] = email.empty();
+	json["enabled_email_2fa"] = false;
 
     if (needs_setup) {
         json["activated"] = true;

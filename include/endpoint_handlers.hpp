@@ -30,6 +30,7 @@ namespace ff {
     ssock::http::server::response handle_api_delete_comment_file_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_stay_logged_in(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_try_logout_endpoint(const ssock::http::server::request& request, database& db);
+    ssock::http::server::response handle_api_update_user_settings(const ssock::http::server::request& request, database& db);
 
     ssock::http::server::response handle_api_create_post_endpoint(const ssock::http::server::request& request, database& db);
     ssock::http::server::response handle_api_delete_post_endpoint(const ssock::http::server::request& request, database& db);

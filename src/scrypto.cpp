@@ -57,12 +57,7 @@ bool scrypto::password_verify(const std::string& password, const std::string& ha
     return BCrypt::validatePassword(password, hash);
 }
 
-std::string scrypto::generate_random_string(const int length) {
-    static constexpr char charset[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
-
+std::string scrypto::generate_random_string(const int length, const char* charset) {
     static constexpr size_t charset_size = sizeof(charset) - 1;
     static std::random_device rd;
     static std::mt19937 generator(rd());
@@ -71,7 +66,7 @@ std::string scrypto::generate_random_string(const int length) {
 
     std::string str(length, 0);
 
-    std::generate_n(str.begin(), length, [&distribution]() { return charset[distribution(generator)]; });
+    std::generate_n(str.begin(), length, [&distribution, &charset]() { return charset[distribution(generator)]; });
 
     return str;
 }

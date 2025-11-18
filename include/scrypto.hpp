@@ -7,6 +7,11 @@
  * @brief  Namespace that contains various functions for cryptographic operations.
  */
 namespace scrypto {
+    static constexpr char default_charset[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
     /**
      * @brief  Function that hashes a string using SHA256.
      * @param  data Data to hash.
@@ -35,9 +40,10 @@ namespace scrypto {
     /**
      * @brief  Function that generates a random string.
      * @param  length Length of the generated string.
+     * @param  charset Character set to use when generating the string.
      * @return Returns the generated string.
      */
-    std::string generate_random_string(const int length = 256);
+    std::string generate_random_string(int length = 256, const char* charset = default_charset);
     /**
      * @brief  Function that returns the amount of time in milliseconds since the Unix epoch.
      * @return Returns the amount of milliseconds in the form of a 64 bit integer.

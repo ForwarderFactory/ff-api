@@ -222,6 +222,7 @@ void ff::start_server() {
                 {"/api/get_topics", ff::handle_api_get_topics_endpoint},
                 {"/api/edit_topic", ff::handle_api_edit_topic_endpoint},
                 {"/api/close_topic", ff::handle_api_close_topic_endpoint},
+            	{"/api/update_user_settings", ff::handle_api_update_user_settings},
                 //{"/api/pin_post_to_topic", ff::handle_api_pin_post_to_topic},
             };
             const std::unordered_map<std::string, std::function<ssock::http::server::response(const ssock::http::server::request&, ff::database&)>> setup_handlers{
