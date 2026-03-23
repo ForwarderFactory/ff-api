@@ -43,7 +43,7 @@ find_package(nlohmann_json REQUIRED)
 find_package(ImageMagick REQUIRED COMPONENTS Magick++)
 find_package(PkgConfig REQUIRED)
 find_package(FFmpeg COMPONENTS AVCODEC AVFORMAT AVUTIL AVDEVICE REQUIRED)
-find_package(ssock REQUIRED)
+find_package(netkit REQUIRED)
 
 add_compile_definitions(LIMHAMN_DATABASE_ICONV)
 
@@ -83,7 +83,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json
     ImageMagick::Magick++
     ${FFMPEG_LIBRARIES}
-    ssock::ssock
+    netkit::netkit
 )
 
 # some systems require explicit linking to iconv, others don't

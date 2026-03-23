@@ -7,8 +7,8 @@
 #include <static_exists.hpp>
 #include <endpoint_handlers.hpp>
 
-ssock::http::server::response ff::handle_api_try_upload_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_try_upload_forwarder_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
 
     if (request.body.empty()) {
 #ifdef FF_DEBUG
@@ -54,8 +54,8 @@ ssock::http::server::response ff::handle_api_try_upload_forwarder_endpoint(const
     return response;
 }
 
-ssock::http::server::response ff::handle_api_try_upload_file_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_try_upload_file_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
 
     if (request.body.empty()) {
 #ifdef FF_DEBUG
@@ -101,8 +101,8 @@ ssock::http::server::response ff::handle_api_try_upload_file_endpoint(const ssoc
     return response;
 }
 
-ssock::http::server::response ff::handle_api_try_setup_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_try_setup_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     if (!ff::needs_setup) {
@@ -213,8 +213,8 @@ ssock::http::server::response ff::handle_api_try_setup_endpoint(const ssock::htt
     }
 }
 
-ssock::http::server::response ff::handle_api_try_register_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_try_register_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
 #if FF_DEBUG
@@ -341,8 +341,8 @@ ssock::http::server::response ff::handle_api_try_register_endpoint(const ssock::
     return response;
 }
 
-ssock::http::server::response ff::handle_api_try_login_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_try_login_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     if (request.method != "POST") {
@@ -457,8 +457,8 @@ ssock::http::server::response ff::handle_api_try_login_endpoint(const ssock::htt
     return response;
 }
 
-ssock::http::server::response ff::handle_api_get_forwarders_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_get_forwarders_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
 
     response.content_type = "application/json";
     response.http_status = 200;
@@ -773,8 +773,8 @@ ssock::http::server::response ff::handle_api_get_forwarders_endpoint(const ssock
     return response;
 }
 
-ssock::http::server::response ff::handle_api_get_files_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_get_files_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
 
     response.content_type = "application/json";
     response.http_status = 200;
@@ -1067,8 +1067,8 @@ ssock::http::server::response ff::handle_api_get_files_endpoint(const ssock::htt
 
 // this endpoint requires auth and cookies
 // in the future, we should allow other kinds of auth for this endpoint, so that third party clients can use it
-ssock::http::server::response ff::handle_api_set_approval_for_uploads_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_set_approval_for_uploads_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -1290,8 +1290,8 @@ ssock::http::server::response ff::handle_api_set_approval_for_uploads_endpoint(c
     return response;
 }
 
-ssock::http::server::response ff::handle_api_update_profile_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_update_profile_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
 
     if (request.body.empty()) {
 #ifdef FF_DEBUG
@@ -1335,8 +1335,8 @@ ssock::http::server::response ff::handle_api_update_profile_endpoint(const ssock
     return response;
 }
 
-ssock::http::server::response ff::handle_api_get_profile_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_get_profile_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
 
     if (request.method != "POST") {
         nlohmann::json json;
@@ -1442,8 +1442,8 @@ ssock::http::server::response ff::handle_api_get_profile_endpoint(const ssock::h
     return response;
 }
 
-ssock::http::server::response ff::handle_api_create_announcement_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_create_announcement_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -1618,8 +1618,8 @@ ssock::http::server::response ff::handle_api_create_announcement_endpoint(const 
     return response;
 }
 
-ssock::http::server::response ff::handle_api_get_announcements_endpoint(const ssock::http::server::request&, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_get_announcements_endpoint(const netkit::http::server::request&, database& db) {
+    netkit::http::server::response response{};
 
     const auto query = db.query("SELECT * FROM general WHERE id=1;");
     if (query.empty()) {
@@ -1676,8 +1676,8 @@ ssock::http::server::response ff::handle_api_get_announcements_endpoint(const ss
     return response;
 }
 
-ssock::http::server::response ff::handle_api_delete_announcement(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_delete_announcement(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -1851,8 +1851,8 @@ ssock::http::server::response ff::handle_api_delete_announcement(const ssock::ht
     }
 }
 
-ssock::http::server::response ff::handle_api_edit_announcement_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_edit_announcement_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2043,8 +2043,8 @@ ssock::http::server::response ff::handle_api_edit_announcement_endpoint(const ss
 }
 
 
-ssock::http::server::response ff::handle_api_rate_file_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_rate_file_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2191,8 +2191,8 @@ ssock::http::server::response ff::handle_api_rate_file_endpoint(const ssock::htt
     return response;
 }
 
-ssock::http::server::response ff::handle_api_rate_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_rate_forwarder_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2339,8 +2339,8 @@ ssock::http::server::response ff::handle_api_rate_forwarder_endpoint(const ssock
     return response;
 }
 
-ssock::http::server::response ff::handle_api_comment_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_comment_forwarder_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2492,8 +2492,8 @@ ssock::http::server::response ff::handle_api_comment_forwarder_endpoint(const ss
     return response;
 }
 
-ssock::http::server::response ff::handle_api_comment_file_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_comment_file_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2644,8 +2644,8 @@ ssock::http::server::response ff::handle_api_comment_file_endpoint(const ssock::
     return response;
 }
 
-ssock::http::server::response ff::handle_api_delete_comment_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_delete_comment_forwarder_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2801,8 +2801,8 @@ ssock::http::server::response ff::handle_api_delete_comment_forwarder_endpoint(c
     return response;
 }
 
-ssock::http::server::response ff::handle_api_delete_comment_file_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_delete_comment_file_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -2958,8 +2958,8 @@ ssock::http::server::response ff::handle_api_delete_comment_file_endpoint(const 
     return response;
 }
 
-ssock::http::server::response ff::handle_api_delete_file_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_delete_file_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3073,8 +3073,8 @@ ssock::http::server::response ff::handle_api_delete_file_endpoint(const ssock::h
     return response;
 }
 
-ssock::http::server::response ff::handle_api_delete_forwarder_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_delete_forwarder_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3188,8 +3188,8 @@ ssock::http::server::response ff::handle_api_delete_forwarder_endpoint(const sso
     return response;
 }
 
-ssock::http::server::response ff::handle_api_stay_logged_in(const ssock::http::server::request& request, database&) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_stay_logged_in(const netkit::http::server::request& request, database&) {
+    netkit::http::server::response response{};
 
     if (request.session_id.empty()) {
         nlohmann::json json;
@@ -3205,7 +3205,7 @@ ssock::http::server::response ff::handle_api_stay_logged_in(const ssock::http::s
 
     ff::logger.write_to_log(limhamn::logger::type::notice, "Setting session cookie with name: " + settings.session_cookie_name + ", value: " + request.session_id + ", expires: " + std::to_string(expires) + "\n");
 
-    response.cookies.push_back(ssock::http::server::cookie{
+    response.cookies.push_back(netkit::http::server::cookie{
         .name = settings.session_cookie_name,
         .value = request.session_id,
         .expires = expires,
@@ -3218,7 +3218,7 @@ ssock::http::server::response ff::handle_api_stay_logged_in(const ssock::http::s
     });
     for (const auto& it : request.cookies) {
         if (it.name == "username" || it.name == "user_type") {
-            response.cookies.push_back(ssock::http::server::cookie{
+            response.cookies.push_back(netkit::http::server::cookie{
                 .name = it.name,
                 .value = it.value,
                 .expires = expires,
@@ -3239,8 +3239,8 @@ ssock::http::server::response ff::handle_api_stay_logged_in(const ssock::http::s
     return response;
 }
 
-ssock::http::server::response ff::handle_api_try_logout_endpoint(const ssock::http::server::request&, database&) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_try_logout_endpoint(const netkit::http::server::request&, database&) {
+    netkit::http::server::response response{};
 
     response.content_type = "application/json";
     response.http_status = 204;
@@ -3252,8 +3252,8 @@ ssock::http::server::response ff::handle_api_try_logout_endpoint(const ssock::ht
     return response;
 }
 
-ssock::http::server::response ff::handle_api_create_topic_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_create_topic_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3438,8 +3438,8 @@ ssock::http::server::response ff::handle_api_create_topic_endpoint(const ssock::
     return response;
 }
 
-ssock::http::server::response ff::handle_api_delete_topic_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_delete_topic_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3590,8 +3590,8 @@ ssock::http::server::response ff::handle_api_delete_topic_endpoint(const ssock::
     return response;
 }
 
-ssock::http::server::response ff::handle_api_get_topics_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_get_topics_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
 	int start_index{};
@@ -3662,8 +3662,8 @@ ssock::http::server::response ff::handle_api_get_topics_endpoint(const ssock::ht
     return response;
 }
 
-ssock::http::server::response ff::handle_api_close_topic_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_close_topic_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -3803,8 +3803,8 @@ ssock::http::server::response ff::handle_api_close_topic_endpoint(const ssock::h
     return response;
 }
 
-ssock::http::server::response ff::handle_api_edit_topic_endpoint(const ssock::http::server::request& request, database& db) {
-	ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_edit_topic_endpoint(const netkit::http::server::request& request, database& db) {
+	netkit::http::server::response response{};
 	response.content_type = "application/json";
 
 	const auto get_username = [&request]() -> std::string {
@@ -3944,12 +3944,12 @@ ssock::http::server::response ff::handle_api_edit_topic_endpoint(const ssock::ht
 	return response;
 }
 
-ssock::http::server::response ff::handle_api_create_post_endpoint(const ssock::http::server::request& request, database& db) {
+netkit::http::server::response ff::handle_api_create_post_endpoint(const netkit::http::server::request& request, database& db) {
 	return ff::handle_try_upload_post_endpoint(request, db);
 }
 
-ssock::http::server::response ff::handle_api_delete_post_endpoint(const ssock::http::server::request& request, database& db) {
-    ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_delete_post_endpoint(const netkit::http::server::request& request, database& db) {
+    netkit::http::server::response response{};
     response.content_type = "application/json";
 
     const auto get_username = [&request]() -> std::string {
@@ -4126,8 +4126,8 @@ ssock::http::server::response ff::handle_api_delete_post_endpoint(const ssock::h
     }
 }
 
-ssock::http::server::response ff::handle_api_close_post_endpoint(const ssock::http::server::request& request, database& db) {
-	ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_close_post_endpoint(const netkit::http::server::request& request, database& db) {
+	netkit::http::server::response response{};
 	response.content_type = "application/json";
 
 	const auto get_username = [&request]() -> std::string {
@@ -4288,8 +4288,8 @@ ssock::http::server::response ff::handle_api_close_post_endpoint(const ssock::ht
 	return response;
 }
 
-ssock::http::server::response ff::handle_api_get_posts_endpoint(const ssock::http::server::request& request, database& db) {
-	ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_get_posts_endpoint(const netkit::http::server::request& request, database& db) {
+	netkit::http::server::response response{};
     response.content_type = "application/json";
 
 	std::vector<std::string> ids{};
@@ -4359,8 +4359,8 @@ ssock::http::server::response ff::handle_api_get_posts_endpoint(const ssock::htt
     return response;
 }
 
-ssock::http::server::response ff::handle_api_edit_post_endpoint(const ssock::http::server::request& request, database& db) {
-	ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_edit_post_endpoint(const netkit::http::server::request& request, database& db) {
+	netkit::http::server::response response{};
 	response.content_type = "application/json";
 
 	const auto get_username = [&request]() -> std::string {
@@ -4524,12 +4524,12 @@ ssock::http::server::response ff::handle_api_edit_post_endpoint(const ssock::htt
     }
 }
 
-ssock::http::server::response ff::handle_api_comment_post_endpoint(const ssock::http::server::request& request, database& db) {
+netkit::http::server::response ff::handle_api_comment_post_endpoint(const netkit::http::server::request& request, database& db) {
 	return ff::handle_try_upload_post_comment_endpoint(request, db);
 }
 
-ssock::http::server::response ff::handle_api_delete_comment_post_endpoint(const ssock::http::server::request& request, database& db) {
-	ssock::http::server::response response{};
+netkit::http::server::response ff::handle_api_delete_comment_post_endpoint(const netkit::http::server::request& request, database& db) {
+	netkit::http::server::response response{};
 	response.content_type = "application/json";
 
 	const auto get_username = [&request]() -> std::string {
@@ -4717,6 +4717,9 @@ ssock::http::server::response ff::handle_api_delete_comment_post_endpoint(const 
 	}
 }
 
-ssock::http::server::response ff::handle_api_update_user_settings(const ssock::http::server::request& request, database& db) {
+netkit::http::server::response ff::handle_api_update_user_settings(const netkit::http::server::request& request, database& db) {
+	static_cast<void>(request);
+	static_cast<void>(db);
+	return {};
 	// update json["enable_email_2fa"] and shit here ;)
 }

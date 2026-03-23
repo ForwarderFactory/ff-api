@@ -4,8 +4,8 @@
 #include <nlohmann/json.hpp>
 #include <endpoint_handlers.hpp>
 
-ssock::http::server::response ff::handle_try_upload_post_endpoint(const ssock::http::server::request& req, database& db) {
-	ssock::http::server::response response;
+netkit::http::server::response ff::handle_try_upload_post_endpoint(const netkit::http::server::request& req, database& db) {
+	netkit::http::server::response response;
 	response.content_type = "application/json";
 
     std::string _json{};
@@ -279,8 +279,8 @@ ssock::http::server::response ff::handle_try_upload_post_endpoint(const ssock::h
 	return response;
 }
 
-ssock::http::server::response ff::handle_try_upload_post_comment_endpoint(const ssock::http::server::request& req, database& db) {
-	ssock::http::server::response response;
+netkit::http::server::response ff::handle_try_upload_post_comment_endpoint(const netkit::http::server::request& req, database& db) {
+	netkit::http::server::response response;
 	response.content_type = "application/json";
 
     std::string _json{};

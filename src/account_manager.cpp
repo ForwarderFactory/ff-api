@@ -5,7 +5,7 @@
 #include <nlohmann/json.hpp>
 #include <limhamn/http/http_utils.hpp>
 
-bool ff::username_is_stored(const ssock::http::server::request& request) {
+bool ff::username_is_stored(const netkit::http::server::request& request) {
     return request.session.find("username") != request.session.end();
 }
 
@@ -170,7 +170,7 @@ void ff::insert_into_user_table(database& database, const std::string& username,
 }
 
 std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const std::string& username, const std::string& password,
-        const std::string& ip_address, const std::string& user_agent, const std::string& otp_code, ssock::http::server::response& response) {
+        const std::string& ip_address, const std::string& user_agent, const std::string& otp_code, netkit::http::server::response& response) {
     const std::string base_username{username};
     std::string base_password{password};
     const std::string base_ip_address{ip_address};
@@ -274,7 +274,7 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
         response.session["username"] = base_username;
         response.session["key"] = key;
 
-        ssock::http::server::cookie c;
+        netkit::http::server::cookie c;
     	c.name = "username";
     	c.value = base_username;
     	c.path = "/";
@@ -292,7 +292,7 @@ std::pair<ff::LoginStatus, std::string> ff::try_login(database& database, const 
             user_type = 1;
         }
 
-    	ssock::http::server::cookie cookie;
+    	netkit::http::server::cookie cookie;
     	cookie.name = "user_type";
     	cookie.value = std::to_string(user_type);
     	cookie.path = "/";
@@ -423,7 +423,7 @@ ff::AccountCreationStatus ff::make_account(database& database, const std::string
 }
 
 
-ff::ProfileUpdateStatus ff::update_profile(const ssock::http::server::request& request, database& db) {
+ff::ProfileUpdateStatus ff::update_profile(const netkit::http::server::request& request, database& db) {
     std::string json{};
     std::string username{};
     std::string icon_path{};
