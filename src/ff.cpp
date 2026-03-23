@@ -184,8 +184,6 @@ void ff::start_server() {
             ff::logger.write_to_log(limhamn::logger::type::access, "Request received from " + request.ip_address + " to " + request.endpoint + " received, handling it.\n");
 
             const std::unordered_map<std::string, std::function<netkit::http::server::response(const netkit::http::server::request&, ff::database&)>> handlers{
-                {"/api/try_setup", ff::handle_api_try_setup_endpoint},
-
                 {"/api/try_upload_forwarder", ff::handle_api_try_upload_forwarder_endpoint},
                 {"/api/try_upload_file", ff::handle_api_try_upload_file_endpoint},
                 {"/api/try_login", ff::handle_api_try_login_endpoint},
@@ -229,6 +227,12 @@ void ff::start_server() {
                 {"/api/try_setup", ff::handle_api_try_setup_endpoint},
             };
 
+            if (needs_setup && setup_handlers.contains(request.endpoint)) {
+                return setup_handlers.at(request.endpoint)(request, *database);
+            } else if (needs_setup) {
+                return setup_handlers.at("/api/try_setup")(request, *database);
+            }
+
             // handle custom paths
             for (const auto& it : ff::settings.custom_paths) {
                 if (it.first == request.endpoint) {
@@ -244,16 +248,10 @@ void ff::start_server() {
 
                     response.body = ff::cache_manager.open_file(it.second);
                     response.http_status = 200;
-                    response.content_type = limhamn::http::utils::get_appropriate_content_type(it.first);
+                	response.content_type = netkit::utility::get_appropriate_content_type(it.first);
 
                     return response;
                 }
-            }
-
-            if (needs_setup && setup_handlers.contains(request.endpoint)) {
-                return setup_handlers.at(request.endpoint)(request, *database);
-            } else if (needs_setup) {
-                return setup_handlers.at("/api/try_setup")(request, *database);
             }
 
             if (handlers.contains(request.endpoint)) {

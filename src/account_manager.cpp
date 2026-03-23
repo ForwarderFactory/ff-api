@@ -150,10 +150,10 @@ void ff::insert_into_user_table(database& database, const std::string& username,
 
 #if FF_DEBUG
     logger.write_to_log(limhamn::logger::type::notice, "Inserting into the users table.\n");
-    logger.write_to_log(limhamn::logger::type::notice, "Username: " + username + ", Password: " + password + ", Key: " + key + ", Email: " + email + ", Created at: " + std::to_string(created_at) + ", Updated at: " + std::to_string(updated_at) + ", IP Address: " + ip_address + ", User Agent: " + ua + ", User Type: " + std::to_string(static_cast<int>(user_type)) + ", JSON: " + json + "\n");
+    logger.write_to_log(limhamn::logger::type::notice, "Username: " + username + ", Password: " + password + ", Salt: " + salt + ", Key: " + key + ", Email: " + email + ", Created at: " + std::to_string(created_at) + ", Updated at: " + std::to_string(updated_at) + ", IP Address: " + ip_address + ", User Agent: " + ua + ", User Type: " + std::to_string(static_cast<int>(user_type)) + ", JSON: " + json + "\n");
 #endif
 
-    if (!database.exec("INSERT INTO users (username, password, salt, key, email, created_at, updated_at, ip_address, user_agent, user_type, json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+    if (!database.exec("INSERT INTO users (username, password, salt, key, email, created_at, updated_at, ip_address, user_agent, user_type, json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
                 username,
                 password,
                 salt,

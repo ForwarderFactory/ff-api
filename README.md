@@ -61,8 +61,9 @@ please let us know!
 - `brew services run postgresql # start postgres`
 - `psql postgres # connect to postgres`
 - `CREATE DATABASE ff; # create a database`
-- `CREATE USER postgres WITH PASSWORD 'password'; # create a user`
+- `CREATE USER postgres WITH ENCRYPTED PASSWORD 'password'; # create a user`
 - `GRANT ALL PRIVILEGES ON DATABASE ff TO postgres; # grant privileges`
+- `ALTER DATABASE ff OWNER TO postgres;` # change ownership of the database
 - `\c ff; # connect to the database`
 - `... # do stuff`
 - `\q # quit`
