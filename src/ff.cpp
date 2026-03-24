@@ -186,17 +186,25 @@ void ff::start_server() {
             const std::unordered_map<std::string, std::function<netkit::http::server::response(const netkit::http::server::request&, ff::database&)>> handlers{
                 {"/api/try_upload_forwarder", ff::handle_api_try_upload_forwarder_endpoint},
                 {"/api/try_upload_file", ff::handle_api_try_upload_file_endpoint},
+
                 {"/api/try_login", ff::handle_api_try_login_endpoint},
+                {"/api/try_logout", ff::handle_api_try_logout_endpoint},
                 {"/api/try_register", ff::handle_api_try_register_endpoint},
+                {"/api/stay_logged_in", ff::handle_api_stay_logged_in},
+
                 {"/api/get_forwarders", ff::handle_api_get_forwarders_endpoint},
                 {"/api/get_files", ff::handle_api_get_files_endpoint},
                 {"/api/set_approval_for_uploads", ff::handle_api_set_approval_for_uploads_endpoint},
+
                 {"/api/rate_forwarder", ff::handle_api_rate_forwarder_endpoint},
                 {"/api/rate_file", ff::handle_api_rate_file_endpoint},
+
                 {"/api/comment_forwarder", ff::handle_api_comment_forwarder_endpoint},
                 {"/api/comment_file", ff::handle_api_comment_file_endpoint},
+
                 {"/api/delete_comment_forwarder", ff::handle_api_delete_comment_forwarder_endpoint},
                 {"/api/delete_comment_file", ff::handle_api_delete_comment_file_endpoint},
+
                 {"/api/update_profile", ff::handle_api_update_profile_endpoint},
                 {"/api/get_profile", ff::handle_api_get_profile_endpoint},
                 {"/api/create_announcement", ff::handle_api_create_announcement_endpoint},
@@ -204,7 +212,7 @@ void ff::start_server() {
                 {"/api/delete_announcement", ff::handle_api_delete_announcement},
                 {"/api/edit_announcement", ff::handle_api_edit_announcement_endpoint},
                 {"/api/stay_logged_in", ff::handle_api_stay_logged_in},
-                {"/api/try_logout", ff::handle_api_try_logout_endpoint},
+
                 {"/api/delete_forwarder", ff::handle_api_delete_forwarder_endpoint},
                 {"/api/delete_file", ff::handle_api_delete_file_endpoint},
 
@@ -213,8 +221,10 @@ void ff::start_server() {
                 {"/api/edit_post", ff::handle_api_edit_post_endpoint},
                 {"/api/close_post", ff::handle_api_close_post_endpoint},
                 {"/api/get_posts", ff::handle_api_get_posts_endpoint},
+
                 {"/api/comment_post", ff::handle_api_comment_post_endpoint},
                 {"/api/delete_comment_post", ff::handle_api_delete_comment_post_endpoint},
+
                 {"/api/create_topic", ff::handle_api_create_topic_endpoint},
                 {"/api/delete_topic", ff::handle_api_delete_topic_endpoint},
                 {"/api/get_topics", ff::handle_api_get_topics_endpoint},
@@ -222,7 +232,40 @@ void ff::start_server() {
                 {"/api/close_topic", ff::handle_api_close_topic_endpoint},
             	{"/api/update_user_settings", ff::handle_api_update_user_settings},
                 //{"/api/pin_post_to_topic", ff::handle_api_pin_post_to_topic},
+
+            	/*
+            	{"/", ff::handle_root_endpoint},
+            	{"/view", ff::handle_view_endpoint},
+            	{"/file", ff::handle_file_endpoint},
+            	{"/profile", ff::handle_profile_endpoint},
+            	{"/topic", ff::handle_topic_endpoint},
+            	{"/post", ff::handle_post_endpoint},
+            	*/
             };
+
+            const std::unordered_map<std::string, std::filesystem::path> static_paths{
+                {"/", settings.static_directory + "/index.html"},
+            	{"/view", settings.static_directory + "/view.html"},
+                {"/file", settings.static_directory + "/file.html"},
+                {"/profile", settings.static_directory + "/profile.html"},
+                {"/topic", settings.static_directory + "/topic.html"},
+                {"/post", settings.static_directory + "/post.html"},
+            	{"/core.css", settings.static_directory + "/core.css"},
+            	{"/core.js", settings.static_directory + "/core.js"},
+                {"/index.css", settings.static_directory + "/index.css"},
+            	{"/index.js", settings.static_directory + "/index.js"},
+                   {"/view.css", settings.static_directory + "/view.css"},
+            	{"/view.js", settings.static_directory + "/view.js"},
+            	{"/file.css", settings.static_directory + "/file.css"},
+            	{"/file.js", settings.static_directory + "/file.js"},
+            	{"/profile.js", settings.static_directory + "/profile.js"},
+            	{"/profile.css", settings.static_directory + "/profile.css"},
+            	{"/topic.css", settings.static_directory + "/topic.css"},
+            	{"/topic.js", settings.static_directory + "/topic.js"},
+            	{"/post.css", settings.static_directory + "/post.css"},
+            	{"/post.js", settings.static_directory + "/post.js"},
+            };
+
             const std::unordered_map<std::string, std::function<netkit::http::server::response(const netkit::http::server::request&, ff::database&)>> setup_handlers{
                 {"/api/try_setup", ff::handle_api_try_setup_endpoint},
             };
@@ -230,8 +273,27 @@ void ff::start_server() {
             if (needs_setup && setup_handlers.contains(request.endpoint)) {
                 return setup_handlers.at(request.endpoint)(request, *database);
             } else if (needs_setup) {
-                return setup_handlers.at("/api/try_setup")(request, *database);
+	            return setup_handlers.at("/api/try_setup")(request, *database);
             }
+
+            // handle static paths
+            const auto serve_from_static = [&static_paths](const std::string& endpoint) -> netkit::http::server::response {
+                netkit::http::server::response response{};
+
+            	if (static_paths.find(endpoint) == static_paths.end() || !ff::static_exists.is_file(static_paths.at(endpoint))) {
+                    response.content_type = "text/html";
+                    response.http_status = 404;
+                    response.body = "<p>404 Not Found</p>";
+
+                    return response;
+                }
+
+                response.body = ff::cache_manager.open_file(static_paths.at(endpoint));
+                response.http_status = 200;
+            	response.content_type = netkit::utility::get_appropriate_content_type(static_paths.at(endpoint));
+
+                return response;
+            };
 
             // handle custom paths
             for (const auto& it : ff::settings.custom_paths) {
@@ -261,7 +323,7 @@ void ff::start_server() {
             // check if a file upload exists and if so, download and serve
             std::string file = request.endpoint;
 
-            if (file.back() == '/') {
+            if (file.back() == '/' && file.size() > 1) {
                 file.pop_back();
             }
 
@@ -284,7 +346,7 @@ void ff::start_server() {
 
                     response.body = open_file(h.path);
                     response.http_status = 200;
-                    response.content_type = limhamn::http::utils::get_appropriate_content_type(h.name);
+                    response.content_type = netkit::utility::get_appropriate_content_type(h.name);
 
                     if (settings.preview_files) {
                         response.headers.push_back({"Content-Disposition", "inline; filename=\"" + h.name + "\""});
@@ -299,16 +361,21 @@ void ff::start_server() {
                 file_path = file_path.lexically_normal(); // normalize the path
 
                 if (file_path.string().find("/view/") == 0) {
-                    return handlers.at("/")(request, *database);
+                    //return handlers.at("/view")(request, *database);
+                	return serve_from_static("/view");
                 }
             } else if (file.find("/file/") != std::string::npos) {
-                return handlers.at("/")(request, *database);
+                //return handlers.at("/file")(request, *database);
+            	return serve_from_static("/file");
             } else if (file.find("/profile/") != std::string::npos) {
-                return handlers.at("/")(request, *database);
+                //return handlers.at("/profile")(request, *database);
+            	return serve_from_static("/profile");
             } else if (file.find("/topic") != std::string::npos) {
-                return handlers.at("/")(request, *database);
+                //return handlers.at("/topic")(request, *database);
+            	return serve_from_static("/topic");
             } else if (file.find("/post/") != std::string::npos) {
-                return handlers.at("/")(request, *database);
+                //return handlers.at("/post")(request, *database);
+                return serve_from_static("/post");
             }
 
             // handle activation URLs
@@ -345,6 +412,9 @@ void ff::start_server() {
                 }
             }
 
+            return serve_from_static(file);
+
+/*
             netkit::http::server::response response{};
 
             response.content_type = "text/html";
@@ -352,6 +422,7 @@ void ff::start_server() {
             response.body = "<p>404 Not Found</p>";
 
             return response;
+            */
         });
 
     	server.run();

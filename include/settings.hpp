@@ -16,6 +16,7 @@ namespace ff {
         std::string session_directory{"/var/lib/ff/sessions"};
         std::string data_directory{"/var/lib/ff/data"};
         std::string temp_directory{"/var/tmp/ff"};
+        std::string static_directory{"/var/lib/ff/static"};
         bool public_registration{true};
         std::vector<std::pair<std::string, std::string>> custom_paths{};
         int64_t max_request_size{250 * 1024 * 1024}; // 250mb
@@ -32,6 +33,7 @@ namespace ff {
         std::string session_directory{"./sessions"};
         std::string data_directory{"./data"};
         std::string temp_directory{"./tmp"};
+        std::string static_directory{"./static"};
         bool public_registration{true};
         std::vector<std::pair<std::string, std::string>> custom_paths{};
         int64_t max_request_size{1024 * 1024 * 1024};

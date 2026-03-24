@@ -45,4 +45,6 @@ namespace ff {
     netkit::http::server::response handle_api_get_topics_endpoint(const netkit::http::server::request& request, database& db);
     netkit::http::server::response handle_api_edit_topic_endpoint(const netkit::http::server::request& request, database& db);
     netkit::http::server::response handle_api_close_topic_endpoint(const netkit::http::server::request& request, database& db);
+
+    netkit::http::server::response handle_root_endpoint(const netkit::http::server::request& request, database& db);
 } // namespace ff

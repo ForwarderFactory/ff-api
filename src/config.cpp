@@ -53,6 +53,7 @@ ff::Settings ff::load_settings(const std::string& _config_file) {
         if (config["filesystem"]["session_directory"]) settings.session_directory = config["filesystem"]["session_directory"].as<std::string>();
         if (config["filesystem"]["data_directory"]) settings.data_directory = config["filesystem"]["data_directory"].as<std::string>();
         if (config["filesystem"]["temp_directory"]) settings.temp_directory = config["filesystem"]["temp_directory"].as<std::string>();
+    	if (config["filesystem"]["static_directory"]) settings.static_directory = config["filesystem"]["static_directory"].as<std::string>();
         if (config["filesystem"]["access_file"]) settings.access_file = config["filesystem"]["access_file"].as<std::string>();
         if (config["filesystem"]["warning_file"]) settings.warning_file = config["filesystem"]["warning_file"].as<std::string>();
         if (config["filesystem"]["error_file"]) settings.error_file = config["filesystem"]["error_file"].as<std::string>();
@@ -200,6 +201,7 @@ std::string ff::generate_default_config() {
     ss << "#   session_directory: The directory where session files are stored.\n";
     ss << "#   data_directory: The directory where data files are stored.\n";
     ss << "#   temp_directory: The directory where temporary files are stored.\n";
+    ss << "#   static_directory: The directory where static files are stored.\n";
     ss << "#   access_file: The path to the access log file.\n";
     ss << "#   warning_file: The path to the warning log file.\n";
     ss << "#   error_file: The path to the error log file.\n";
@@ -210,6 +212,7 @@ std::string ff::generate_default_config() {
     ss << "  session_directory: \"" << ff::settings.session_directory << "\"\n";
     ss << "  data_directory: \"" << ff::settings.data_directory << "\"\n";
     ss << "  temp_directory: \"" << ff::settings.temp_directory << "\"\n";
+	ss << "  static_directory: \"" << ff::settings.static_directory << "\"\n";
     ss << "  access_file: \"" << ff::settings.access_file << "\"\n";
     ss << "  warning_file: \"" << ff::settings.warning_file << "\"\n";
     ss << "  error_file: \"" << ff::settings.error_file << "\"\n";
